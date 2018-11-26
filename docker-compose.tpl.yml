@@ -13,7 +13,7 @@ services:
     image: nextcloud:fpm
     restart: always
     volumes:
-      - {{nextcloud_data}}:/var/www/html/data
+      - {{NEXTCLOUD_DATA}}:/var/www/html/data
       - nextcloud:/var/www/html
     environment:
       - POSTGRES_HOST=db
@@ -22,15 +22,25 @@ services:
     depends_on:
       - db
 
-  web:
-    build: ./web
+  web_nextcloud:
+    build: ./web_nextcloud
     restart: always
     volumes:
       - nextcloud:/var/www/html:ro
     env_file:
-      - web.env
+      - web_nextcloud.env
     depends_on:
       - nextcloud
+    networks:
+      - proxy-tier
+      - default
+
+  web_cockpit:
+    build: ./web_cockpit
+    restart: always
+    env_file:
+      - web_cockpit.env
+    network_mode: host
     networks:
       - proxy-tier
       - default
@@ -39,8 +49,8 @@ services:
     image: linuxserver/transmission:150
     restart: always
     volumes:
-      - transmission_config:/config
-      - {{transmission_data}}:/downloads
+      - {{TRANSMISSION_CONFIG}}:/config
+      - {{TRANSMISSION_DATA}}:/downloads
       - transmission_watch:/watch
     env_file:
       - transmission.env
