@@ -1,7 +1,8 @@
 #!/bin/bash
 
-
 LETSENCRYPT_MAIL=""
+
+POSTGRES_ADMIN_PASSWORD=""
 
 NEXTCLOUD_PASSWORD=""
 NEXTCLOUD_DB="nextcloud"
@@ -19,7 +20,7 @@ TRANSMISSION_CONFIG=""
 TRAEFIK_CONF_DIR=""
 TRAEFIK_LETSENCRYPT_DIR=""
 TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
-TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.conf"
+TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
 
 
 if [ -e $TRAEFIK_CONF_FILE ]; then 
@@ -57,7 +58,19 @@ while true; do
 done
 
 
-SUBJECT="Nextcloud password"
+SUBJECT="Postgres admin password"
+while true; do
+    read -p "$SUBJECT: " POSTGRES_ADMIN_PASSWORD
+    if [ -z "$POSTGRES_ADMIN_PASSWORD" ]; then
+        echo "$SUBJECT cannot be empty, try again"
+    else
+        break
+    fi
+done
+
+
+
+SUBJECT="Nextcloud db password"
 while true; do
     read -p "$SUBJECT: " NEXTCLOUD_PASSWORD
     if [ -z "$NEXTCLOUD_PASSWORD" ]; then
@@ -174,8 +187,10 @@ while true; do
 done
 
 cat db.tpl.env | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;s|{{NEXTCLOUD_DB}}|$NEXTCLOUD_DB|g;s|{{NEXTCLOUD_DB_USER}}|$NEXTCLOUD_DB_USER|g" > db.env
+cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > init.sql
+
 cat transmission.tpl.env | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;" > transmission.env
+
+cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_VHOST}}|$COCKPIT_VHOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{VHOST_LIST}}|$VHOST_LIST|g" > $TRAEFIK_CONF_FILE
+
 cat docker-compose.tpl.yml | sed -e "s|{{TRAEFIK_CONF_FILE}}|$TRAEFIK_CONF_FILE|g;s|{{TRAEFIK_LETSENCRYPT_FILE}}|$TRAEFIK_LETSENCRYPT_FILE|g;s|{{NEXTCLOUD_VHOST}}|$NEXTCLOUD_VHOST|g;s|{{NEXTCLOUD_DATA}}|$NEXTCLOUD_DATA|g;s|{{NEXTCLOUD_CONFIG}}|$NEXTCLOUD_CONFIG|g;s|{{TRANSMISSION_VHOST}}|$TRANSMISSION_VHOST|g;s|{{TRANSMISSION_DATA}}|$TRANSMISSION_DATA|g;s|{{TRANSMISSION_CONFIG}}|$TRANSMISSION_CONFIG|g" > docker-compose.yml
-cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_VHOST}}|$COCKPIT_VHOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{VHOST_LIST}}|$VHOST_LIST|g" > traefik/traefik.toml
-
-

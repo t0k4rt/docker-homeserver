@@ -17,10 +17,13 @@ services:
       - {{NEXTCLOUD_DATA}}:/var/www/html/data
       - {{NEXTCLOUD_CONFIG}}:/var/www/html/config
       - nextcloud:/var/www/html
+    networks:
+      - proxy-tier
+      - default
     environment:
       - POSTGRES_HOST=db
     env_file:
-      - db.env
+      - nextcloud.env
     depends_on:
       - db
     labels:
@@ -59,8 +62,8 @@ services:
     image: traefik # The official Traefik docker image
     command: --api --docker # Enables the web UI and tells Traefik to listen to docker
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
       - "8080:8080" # The Web UI (enabled by --api)
     networks:
       - web
