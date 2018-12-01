@@ -23,14 +23,6 @@ TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
 TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
 
 
-if [ -e $TRAEFIK_CONF_FILE ]; then 
-    touch $TRAEFIK_CONF_FILE
-fi
-
-if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then 
-    touch $TRAEFIK_LETSENCRYPT_FILE
-    chmod 600 $TRAEFIK_LETSENCRYPT_FILE
-fi
 
 DOMAIN="toktok.fr"
 VHOST_LIST="\"${TRANSMISSION_VHOST}\",\"${NEXTCLOUD_VHOST}\",\"${COCKPIT_VHOST}\""
@@ -185,6 +177,17 @@ while true; do
         break
     fi
 done
+
+
+if [ -e $TRAEFIK_CONF_FILE ]; then 
+    touch $TRAEFIK_CONF_FILE
+fi
+
+if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then 
+    touch $TRAEFIK_LETSENCRYPT_FILE
+    chmod 600 $TRAEFIK_LETSENCRYPT_FILE
+fi
+
 
 cat db.tpl.env | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;s|{{NEXTCLOUD_DB}}|$NEXTCLOUD_DB|g;s|{{NEXTCLOUD_DB_USER}}|$NEXTCLOUD_DB_USER|g" > db.env
 cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > init.sql
