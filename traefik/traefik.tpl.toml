@@ -1,0 +1,48 @@
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+    [entryPoints.http]
+        address = ":80"
+    [entryPoints.http.redirect]
+        entryPoint = "https"
+    [entryPoints.https]
+        address = ":443"
+    [entryPoints.https.tls]
+[api]
+
+[docker]
+    endpoint = "unix:///var/run/docker.sock"
+    watch = true
+    exposedByDefault = false
+
+[acme]
+    email = "{{LETSENCRYPT_MAIL}}"
+    storage = "acme.json"
+    entryPoint = "https"
+    onDemand = false
+[acme.httpChallenge]
+    entryPoint = "http"
+
+[[acme.domains]]
+    main = "{{DOMAIN}}"
+    sans = [{{VHOST_LIST}}]
+
+[file]
+# Backends
+[backends]
+
+  [backends.cockpit]
+
+    [backends.cockpit.servers.server0]
+        url = "http://192.168.1.35:9090"
+        weight = 1
+
+# Frontends
+[frontends]
+    [frontends.cockpit]
+        entryPoints = ["http", "https"]
+        backend = "cockpit"
+        passHostHeader = true
+        useXForwardedFor = true
+        [frontends.cockpit.routes.test_1]
+            rule = "Host:{{COCKPIT_VHOST}}"

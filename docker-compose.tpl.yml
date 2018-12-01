@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   db:
     image: postgres:10-alpine
     restart: always
@@ -10,10 +11,11 @@ services:
       - db.env
 
   nextcloud:
-    image: nextcloud:fpm
+    image: nextcloud:14-apache
     restart: always
     volumes:
       - {{NEXTCLOUD_DATA}}:/var/www/html/data
+      - {{NEXTCLOUD_CONFIG}}:/var/www/html/config
       - nextcloud:/var/www/html
     environment:
       - POSTGRES_HOST=db
@@ -21,29 +23,14 @@ services:
       - db.env
     depends_on:
       - db
+    labels:
+      - "traefik.docker.network=proxy-tier"
+      - "traefik.enable=true"
+      - "traefik.backend=nextcloud"
+      - "traefik.frontend.rule=Host:{{NEXTCLOUD_VHOST}}"
+      - "traefik.protocol=http"
+      - "traefik.port=80"
 
-  web_nextcloud:
-    build: ./web_nextcloud
-    restart: always
-    volumes:
-      - nextcloud:/var/www/html:ro
-    env_file:
-      - web_nextcloud.env
-    depends_on:
-      - nextcloud
-    networks:
-      - proxy-tier
-      - default
-
-  web_cockpit:
-    build: ./web_cockpit
-    restart: always
-    env_file:
-      - web_cockpit.env
-    network_mode: host
-    networks:
-      - proxy-tier
-      - default
 
   transmission:
     image: linuxserver/transmission:150
@@ -56,45 +43,38 @@ services:
       - transmission.env
     networks:
       - proxy-tier
+      - default
+    expose: 
+      - 9091
+    labels:
+      - "traefik.docker.network=proxy-tier"
+      - "traefik.enable=true"
+      - "traefik.backend=transmission"
+      - "traefik.frontend.rule=Host:{{TRANSMISSION_VHOST}}"
+      - "traefik.protocol=http"
+      - "traefik.port=9091"
 
-  proxy:
-    build: ./proxy
-    restart: always
+
+  traefik-proxy:
+    image: traefik # The official Traefik docker image
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
     ports:
       - 80:80
       - 443:443
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+      - "8080:8080" # The Web UI (enabled by --api)
+    networks:
+      - web
     volumes:
-      - certs:/etc/nginx/certs:ro
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{TRAEFIK_CONF_FILE}}:/traefik.toml
+      - {{TRAEFIK_LETSENCRYPT_FILE}}:/acme.json
     networks:
       - proxy-tier
-
-  letsencrypt-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    restart: always
-    volumes:
-      - certs:/etc/nginx/certs
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - proxy-tier
-    depends_on:
-      - proxy
 
 volumes:
+  transmission_watch:
   db:
   nextcloud:
-  certs:
-  vhost.d:
-  html:
-  transmission_config:
-  transmission_downloads:
-  transmission_watch:
 
 networks:
   proxy-tier:
