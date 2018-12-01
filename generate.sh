@@ -19,8 +19,7 @@ TRANSMISSION_CONFIG=""
 
 TRAEFIK_CONF_DIR=""
 TRAEFIK_LETSENCRYPT_DIR=""
-TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
-TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
+
 
 
 
@@ -179,13 +178,18 @@ while true; do
 done
 
 
+TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
+TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
+
+echo $TRAEFIK_CONF_FILE
 if [ -e $TRAEFIK_CONF_FILE ]; then 
-    touch $TRAEFIK_CONF_FILE
+    sudo touch $TRAEFIK_CONF_FILE
 fi
 
+echo $TRAEFIK_LETSENCRYPT_FILE
 if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then 
-    touch $TRAEFIK_LETSENCRYPT_FILE
-    chmod 600 $TRAEFIK_LETSENCRYPT_FILE
+    sudo touch $TRAEFIK_LETSENCRYPT_FILE
+    sudo chmod 600 $TRAEFIK_LETSENCRYPT_FILE
 fi
 
 
@@ -194,6 +198,7 @@ cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" >
 
 cat transmission.tpl.env | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;" > transmission.env
 
-cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_VHOST}}|$COCKPIT_VHOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{VHOST_LIST}}|$VHOST_LIST|g" > $TRAEFIK_CONF_FILE
+cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_VHOST}}|$COCKPIT_VHOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{VHOST_LIST}}|$VHOST_LIST|g" traefik/traefik.tpl.toml > traefik/traefik.tpl.toml
+sudo mv traefik/traefik.toml $TRAEFIK_CONF_FILE
 
 cat docker-compose.tpl.yml | sed -e "s|{{TRAEFIK_CONF_FILE}}|$TRAEFIK_CONF_FILE|g;s|{{TRAEFIK_LETSENCRYPT_FILE}}|$TRAEFIK_LETSENCRYPT_FILE|g;s|{{NEXTCLOUD_VHOST}}|$NEXTCLOUD_VHOST|g;s|{{NEXTCLOUD_DATA}}|$NEXTCLOUD_DATA|g;s|{{NEXTCLOUD_CONFIG}}|$NEXTCLOUD_CONFIG|g;s|{{TRANSMISSION_VHOST}}|$TRANSMISSION_VHOST|g;s|{{TRANSMISSION_DATA}}|$TRANSMISSION_DATA|g;s|{{TRANSMISSION_CONFIG}}|$TRANSMISSION_CONFIG|g" > docker-compose.yml
