@@ -182,19 +182,27 @@ TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
 TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
 
 echo $TRAEFIK_CONF_FILE
+if [ -d $TRAEFIK_CONF_FILE ]; then 
+    sudo rm $TRAEFIK_CONF_FILE
+fi
 if [ -e $TRAEFIK_CONF_FILE ]; then 
     sudo touch $TRAEFIK_CONF_FILE
 fi
 
 echo $TRAEFIK_LETSENCRYPT_FILE
+if [ -d $TRAEFIK_LETSENCRYPT_FILE ]; then 
+    sudo rm $TRAEFIK_LETSENCRYPT_FILE
+fi
 if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then 
     sudo touch $TRAEFIK_LETSENCRYPT_FILE
-    sudo chmod 600 $TRAEFIK_LETSENCRYPT_FILE
 fi
+sudo chmod 600 $TRAEFIK_LETSENCRYPT_FILE
 
 
-cat db.tpl.env | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;s|{{NEXTCLOUD_DB}}|$NEXTCLOUD_DB|g;s|{{NEXTCLOUD_DB_USER}}|$NEXTCLOUD_DB_USER|g" > db.env
-cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > init.sql
+cat db.tpl.env | sed -e "s|{{POSTGRES_ADMIN_PASSWORD}}|$POSTGRES_ADMIN_PASSWORD|g;" > db.env
+cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > db/init.sql
+
+cat nextcloud.tpl.env | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;s|{{NEXTCLOUD_DB}}|$NEXTCLOUD_DB|g;s|{{NEXTCLOUD_DB_USER}}|$NEXTCLOUD_DB_USER|g" > nextcloud.env
 
 cat transmission.tpl.env | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;" > transmission.env
 
