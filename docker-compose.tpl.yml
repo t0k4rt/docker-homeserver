@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
   db:
     build: ./db
     restart: always
@@ -18,7 +17,7 @@ services:
       - {{NEXTCLOUD_CONFIG}}:/var/www/html/config
       - nextcloud:/var/www/html
     networks:
-      - proxy-tier
+      - traefik
       - default
     environment:
       - POSTGRES_HOST=db
@@ -27,13 +26,12 @@ services:
     depends_on:
       - db
     labels:
-      - "traefik.docker.network=proxy-tier"
+      - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
       - "traefik.backend=nextcloud"
       - "traefik.frontend.rule=Host:{{NEXTCLOUD_VHOST}}"
       - "traefik.protocol=http"
       - "traefik.port=80"
-
 
   transmission:
     image: linuxserver/transmission:150
@@ -45,18 +43,16 @@ services:
     env_file:
       - transmission.env
     networks:
-      - proxy-tier
-      - default
+      - traefik
     expose: 
       - 9091
     labels:
-      - "traefik.docker.network=proxy-tier"
+      - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
       - "traefik.backend=transmission"
       - "traefik.frontend.rule=Host:{{TRANSMISSION_VHOST}}"
       - "traefik.protocol=http"
       - "traefik.port=9091"
-
 
   traefik-proxy:
     image: traefik # The official Traefik docker image
@@ -65,14 +61,12 @@ services:
       - "80:80"
       - "443:443"
       - "8080:8080" # The Web UI (enabled by --api)
-    networks:
-      - web
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - {{TRAEFIK_CONF_FILE}}:/traefik.toml
       - {{TRAEFIK_LETSENCRYPT_FILE}}:/acme.json
     networks:
-      - proxy-tier
+      - traefik
 
 volumes:
   transmission_watch:
@@ -80,4 +74,4 @@ volumes:
   nextcloud:
 
 networks:
-  proxy-tier:
+  traefik:
