@@ -66,8 +66,6 @@ services:
       - jackett.env
     networks:
       - traefik
-    expose: 
-      - 9091
     labels:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
@@ -88,8 +86,6 @@ services:
       - jackett.env
     networks:
       - traefik
-    expose: 
-      - 9091
     labels:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
