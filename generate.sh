@@ -183,7 +183,6 @@ while true; do
 done
 
 
-
 SUBJECT="Radarr vhost"
 while true; do
     read -p "$SUBJECT: " value
@@ -196,20 +195,20 @@ while true; do
     fi
 done
 
-SUBJECT="Jackett vhost"
-while true; do
-    read -p "$SUBJECT: " value
-    if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $JACKETT_VHOST"
-        break
-    else
-        JACKETT_VHOST="$value"
-        break
-    fi
-done
+# SUBJECT="Jackett vhost"
+# while true; do
+#     read -p "$SUBJECT: " value
+#     if [ -z "$value" ]; then
+#         echo "Using default $SUBJECT: $JACKETT_VHOST"
+#         break
+#     else
+#         JACKETT_VHOST="$value"
+#         break
+#     fi
+# done
 
 
-VHOST_LIST="\"${TRANSMISSION_VHOST}\",\"${NEXTCLOUD_VHOST}\",\"${COCKPIT_VHOST}\",\"${JACKETT_VHOST}\",\"${RADARR_VHOST}\""
+VHOST_LIST="\"${TRANSMISSION_VHOST}\",\"${NEXTCLOUD_VHOST}\",\"${COCKPIT_VHOST}\",\"${RADARR_VHOST}\""
 TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
 TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
 
@@ -220,9 +219,6 @@ cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" >
 
 #Nextcloud
 cat nextcloud.tpl.env | sed -e "s|{{PGID}}|$PGID|g;s|{{PUID}}|$PUID|g;s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;s|{{NEXTCLOUD_DB}}|$NEXTCLOUD_DB|g;s|{{NEXTCLOUD_DB_USER}}|$NEXTCLOUD_DB_USER|g" > nextcloud.env
-
-# Transmission
-cat transmission.tpl.env | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;" > transmission.env
 
 # Transmission
 cat transmission.tpl.env | sed -e "s|{{PGID}}|$PGID|g;s|{{PUID}}|$PUID|g;" > transmission.env

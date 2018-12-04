@@ -7,7 +7,11 @@ defaultEntryPoints = ["http", "https"]
         entryPoint = "https"
     [entryPoints.https]
         address = ":443"
-    [entryPoints.https.tls]
+        [entryPoints.https.tls]
+    # this should enable http basic auth on radarr endpoint
+    # [entryPoints.radarr]
+    #     [entryPoints.radarr.auth.basic]
+    #     users = ["user:pwd"]
 [api]
 
 [docker]
