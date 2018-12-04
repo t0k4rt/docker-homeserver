@@ -54,9 +54,54 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=9091"
 
+  jackett:
+    image: linuxserver/jacket:344
+    restart: always
+    volumes:
+      - {{JACKETT_CONFIG}}:/config
+      # map blackhol with transmission watch dir
+      - transmission_watch:/downloads
+      - /etc/localtime:/etc/localtime:ro      
+    env_file:
+      - jackett.env
+    networks:
+      - traefik
+    expose: 
+      - 9091
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=jackett"
+      - "traefik.frontend.rule=Host:jackett.{{LOCAL_HOSTNAME}}"
+      - "traefik.protocol=http"
+      - "traefik.port=9117"
+
+  radarr:
+    image: linuxserver/radarr:142
+    restart: always
+    volumes:
+      - {{RADARR_CONFIG}}:/config
+      - {{RADARR_MOVIES}}:/movies
+      - {{RADARR_DOWNLOADS}}:/downloads
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - jackett.env
+    networks:
+      - traefik
+    expose: 
+      - 9091
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=radarr"
+      - "traefik.frontend.rule=Host:{{RADARR_VHOST}}"
+      - "traefik.protocol=http"
+      - "traefik.port=7878"
+
   traefik-proxy:
     image: traefik # The official Traefik docker image
     command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    restart: always
     ports:
       - "80:80"
       - "443:443"

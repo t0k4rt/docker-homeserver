@@ -4,6 +4,12 @@ LETSENCRYPT_MAIL=""
 
 POSTGRES_ADMIN_PASSWORD=""
 
+PGID=1000
+PUID=1000
+
+LOCAL_HOSTNAME="tokserver.local"
+DOMAIN="toktok.fr"
+
 NEXTCLOUD_PASSWORD=""
 NEXTCLOUD_DB="nextcloud"
 NEXTCLOUD_DB_USER="nextcloud"
@@ -17,14 +23,13 @@ TRANSMISSION_VHOST="transmission.toktok.fr"
 TRANSMISSION_DATA=""
 TRANSMISSION_CONFIG=""
 
+RADARR_VHOST="radarr.toktok.fr"
+
 TRAEFIK_CONF_DIR=""
 TRAEFIK_LETSENCRYPT_DIR=""
 
 
-
-
-DOMAIN="toktok.fr"
-VHOST_LIST="\"${TRANSMISSION_VHOST}\",\"${NEXTCLOUD_VHOST}\",\"${COCKPIT_VHOST}\""
+#### READ VARIABLES
 
 SUBJECT="Let's encrypt email"
 while true; do
@@ -178,8 +183,61 @@ while true; do
 done
 
 
+
+SUBJECT="Radarr vhost"
+while true; do
+    read -p "$SUBJECT: " value
+    if [ -z "$value" ]; then
+        echo "Using default $SUBJECT: $RADARR_VHOST"
+        break
+    else
+        RADARR_VHOST="$value"
+        break
+    fi
+done
+
+SUBJECT="Jackett vhost"
+while true; do
+    read -p "$SUBJECT: " value
+    if [ -z "$value" ]; then
+        echo "Using default $SUBJECT: $JACKETT_VHOST"
+        break
+    else
+        JACKETT_VHOST="$value"
+        break
+    fi
+done
+
+
+VHOST_LIST="\"${TRANSMISSION_VHOST}\",\"${NEXTCLOUD_VHOST}\",\"${COCKPIT_VHOST}\",\"${JACKETT_VHOST}\",\"${RADARR_VHOST}\""
 TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
 TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
+
+
+# DB
+cat db.tpl.env | sed -e "s|{{POSTGRES_ADMIN_PASSWORD}}|$POSTGRES_ADMIN_PASSWORD|g;" > db.env
+cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > db/init.sql
+
+#Nextcloud
+cat nextcloud.tpl.env | sed -e "s|{{PGID}}|$PGID|g;s|{{PUID}}|$PUID|g;s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;s|{{NEXTCLOUD_DB}}|$NEXTCLOUD_DB|g;s|{{NEXTCLOUD_DB_USER}}|$NEXTCLOUD_DB_USER|g" > nextcloud.env
+
+# Transmission
+cat transmission.tpl.env | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;" > transmission.env
+
+# Transmission
+cat transmission.tpl.env | sed -e "s|{{PGID}}|$PGID|g;s|{{PUID}}|$PUID|g;" > transmission.env
+
+# Radarr
+cat radarr.tpl.env | sed -e "s|{{PGID}}|$PGID|g;s|{{PUID}}|$PUID|g;" > radarr.env
+
+# Jackett
+cat jackett.tpl.env | sed -e "s|{{PGID}}|$PGID|g;s|{{PUID}}|$PUID|g;" > jackett.env
+
+# Docker compose 
+cat docker-compose.tpl.yml | sed -e "s|{{TRAEFIK_CONF_FILE}}|$TRAEFIK_CONF_FILE|g;s|{{TRAEFIK_LETSENCRYPT_FILE}}|$TRAEFIK_LETSENCRYPT_FILE|g;s|{{NEXTCLOUD_VHOST}}|$NEXTCLOUD_VHOST|g;s|{{NEXTCLOUD_DATA}}|$NEXTCLOUD_DATA|g;s|{{NEXTCLOUD_CONFIG}}|$NEXTCLOUD_CONFIG|g;s|{{TRANSMISSION_VHOST}}|$TRANSMISSION_VHOST|g;s|{{TRANSMISSION_DATA}}|$TRANSMISSION_DATA|g;s|{{TRANSMISSION_CONFIG}}|$TRANSMISSION_CONFIG|g" > docker-compose.yml
+
+# Traefik
+cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_VHOST}}|$COCKPIT_VHOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{VHOST_LIST}}|$VHOST_LIST|g" traefik/traefik.tpl.toml > traefik/traefik.tpl.toml
 
 echo $TRAEFIK_CONF_FILE
 if [ -d $TRAEFIK_CONF_FILE ]; then 
@@ -187,6 +245,7 @@ if [ -d $TRAEFIK_CONF_FILE ]; then
 fi
 if [ -e $TRAEFIK_CONF_FILE ]; then 
     sudo touch $TRAEFIK_CONF_FILE
+    sudo mv traefik/traefik.toml $TRAEFIK_CONF_FILE
 fi
 
 echo $TRAEFIK_LETSENCRYPT_FILE
@@ -197,16 +256,3 @@ if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then
     sudo touch $TRAEFIK_LETSENCRYPT_FILE
 fi
 sudo chmod 600 $TRAEFIK_LETSENCRYPT_FILE
-
-
-cat db.tpl.env | sed -e "s|{{POSTGRES_ADMIN_PASSWORD}}|$POSTGRES_ADMIN_PASSWORD|g;" > db.env
-cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > db/init.sql
-
-cat nextcloud.tpl.env | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;s|{{NEXTCLOUD_DB}}|$NEXTCLOUD_DB|g;s|{{NEXTCLOUD_DB_USER}}|$NEXTCLOUD_DB_USER|g" > nextcloud.env
-
-cat transmission.tpl.env | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;" > transmission.env
-
-cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_VHOST}}|$COCKPIT_VHOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{VHOST_LIST}}|$VHOST_LIST|g" traefik/traefik.tpl.toml > traefik/traefik.tpl.toml
-sudo mv traefik/traefik.toml $TRAEFIK_CONF_FILE
-
-cat docker-compose.tpl.yml | sed -e "s|{{TRAEFIK_CONF_FILE}}|$TRAEFIK_CONF_FILE|g;s|{{TRAEFIK_LETSENCRYPT_FILE}}|$TRAEFIK_LETSENCRYPT_FILE|g;s|{{NEXTCLOUD_VHOST}}|$NEXTCLOUD_VHOST|g;s|{{NEXTCLOUD_DATA}}|$NEXTCLOUD_DATA|g;s|{{NEXTCLOUD_CONFIG}}|$NEXTCLOUD_CONFIG|g;s|{{TRANSMISSION_VHOST}}|$TRANSMISSION_VHOST|g;s|{{TRANSMISSION_DATA}}|$TRANSMISSION_DATA|g;s|{{TRANSMISSION_CONFIG}}|$TRANSMISSION_CONFIG|g" > docker-compose.yml
