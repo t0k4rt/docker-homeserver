@@ -1,6 +1,4 @@
-db.env
-nextcloud.env
-transmission.env
+env/*.env
 docker-compose.yml
 traefik/traefik.toml
 db/init.sql

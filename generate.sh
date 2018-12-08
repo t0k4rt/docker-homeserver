@@ -36,6 +36,29 @@ while true; do
         break
     fi
 done
+echo ""
+
+SUBJECT="Config dir"
+while true; do
+    read -p "$SUBJECT: " CONFIG_DIR
+    if [ -z "$CONFIG_DIR" ]; then
+        echo "$SUBJECT cannot be empty, try again"
+    else
+        break
+    fi
+done
+echo ""
+
+SUBJECT="Movie download dir"
+while true; do
+    read -p "$SUBJECT: " MOVIE_DOWNLOAD_DIR
+    if [ -z "$MOVIE_DOWNLOAD_DIR" ]; then
+        echo "$SUBJECT cannot be empty, try again"
+    else
+        break
+    fi
+done
+echo ""
 
 SUBJECT="Postgres admin password"
 while true; do
@@ -46,7 +69,7 @@ while true; do
         break
     fi
 done
-
+echo ""
 
 SUBJECT="Nextcloud db password"
 while true; do
@@ -57,9 +80,9 @@ while true; do
         break
     fi
 done
+echo ""
 
-
-SUBJECT="Nextcloud DB"
+SUBJECT="Nextcloud DB name (Default ${NEXTCLOUD_DB})"
 while true; do
     read -p "$SUBJECT: " value
     if [ -z "$value" ]; then
@@ -70,9 +93,9 @@ while true; do
         break
     fi
 done
+echo ""
 
-
-SUBJECT="Nextcloud User"
+SUBJECT="Nextcloud User (Default ${NEXTCLOUD_DB_USER})"
 while true; do
     read -p "$SUBJECT: " value
     if [ -z "$value" ]; then
@@ -83,20 +106,20 @@ while true; do
         break
     fi
 done
+echo ""
 
-
-SUBJECT="Nextcloud vhost"
+SUBJECT="Nextcloud host (default ${NEXTCLOUD_HOST})"
 while true; do
     read -p "$SUBJECT: " value
     if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $NEXTCLOUD_VHOST"
+        echo "Using default $SUBJECT: $NEXTCLOUD_HOST"
         break
     else
-        NEXTCLOUD_VHOST="$value"
+        NEXTCLOUD_HOST="$value"
         break
     fi
 done
-
+echo ""
 
 SUBJECT="Nextcloud data dir"
 while true; do
@@ -107,70 +130,87 @@ while true; do
         break
     fi
 done
+echo ""
 
-
-SUBJECT="Cockpit vhost"
+SUBJECT="Cockpit host (default ${COCKPIT_HOST})"
 while true; do
     read -p "$SUBJECT: " value
     if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $COCKPIT_VHOST"
+        echo "Using default $SUBJECT: $COCKPIT_HOST"
         break
     else
-        COCKPIT_VHOST="$value"
+        COCKPIT_HOST="$value"
         break
     fi
 done
+echo ""
 
-
-SUBJECT="Transmission vhost"
+SUBJECT="Transmission host (default ${TRANSMISSION_HOST})"
 while true; do
     read -p "$SUBJECT: " value
     if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $TRANSMISSION_VHOST"
+        echo "Using default $SUBJECT: $TRANSMISSION_HOST"
         break
     else
-        TRANSMISSION_VHOST="$value"
+        TRANSMISSION_HOST="$value"
         break
     fi
 done
+echo ""
 
-
-SUBJECT="Radarr vhost"
+SUBJECT="Radarr host (default ${RADARR_HOST})"
 while true; do
     read -p "$SUBJECT: " value
     if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $RADARR_VHOST"
+        echo "Using default $SUBJECT: $RADARR_HOST"
         break
     else
-        RADARR_VHOST="$value"
+        RADARR_HOST="$value"
         break
     fi
 done
+echo ""
+
+DATA_DIR=""
+SUBJECT="Data dir"
+while true; do
+    read -p "$SUBJECT: "  DATA_DIR
+    if [ -z "$DATA_DIR" ]; then
+        echo "$SUBJECT cannot be empty, try again"
+    else
+        break
+    fi
+done
+echo ""
 
 
-
-
+RADARR_MOVIES="${DATA_DIR}/radarr_movies"
+RADARR_DOWNLOADS="${DATA_DIR}/radarr_downloads"
 
 # Global env
-echo PGID=${PGID} > ./env/global.env
-echo PUID=${PUID} > ./env/global.env
-echo CONFIG_DIR=${CONFIG_DIR} > ./env/global.env
-echo MOVIE_DOWNLOAD_DIR=${MOVIE_DOWNLOAD_DIR} > ./env/global.env
+rm ./env/global.env
+echo PGID=${PGID} >> ./env/global.env
+echo PUID=${PUID} >> ./env/global.env
+echo CONFIG_DIR=${CONFIG_DIR} >> ./env/global.env
+echo MOVIE_DOWNLOAD_DIR=${MOVIE_DOWNLOAD_DIR} >> ./env/global.env
 
 # DB
 cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > db/init.sql
-echo POSTGRES_ADMIN_PASSWORD=${POSTGRES_ADMIN_PASSWORD} > ./env/db.env
+rm ./env/db.env
+echo POSTGRES_ADMIN_PASSWORD=${POSTGRES_ADMIN_PASSWORD} >> ./env/db.env
 
 #Nextcloud
-echo NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD} > ./env/nextcloud.env
-echo NEXTCLOUD_DB=${NEXTCLOUD_DB} > ./env/nextcloud.env
-echo NEXTCLOUD_DB_USER=${NEXTCLOUD_DB_USER} > ./env/nextcloud.env
-echo NEXTCLOUD_DATA=${NEXTCLOUD_DATA} > ./env/nextcloud.env
+rm ./env/nextcloud.env
+echo NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD} >> ./env/nextcloud.env
+echo NEXTCLOUD_DB=${NEXTCLOUD_DB} >> ./env/nextcloud.env
+echo NEXTCLOUD_DB_USER=${NEXTCLOUD_DB_USER} >> ./env/nextcloud.env
+echo NEXTCLOUD_DATA=${NEXTCLOUD_DATA} >> ./env/nextcloud.env
 
 # Radarr
-echo RADARR_TZ=Europe/Paris  > ./env/radarr.env
-echo RADARR_MOVIES=${RADARR_MOVIES} > ./env/radarr.env
-echo RADARR_DOWNLOADS=${RADARR_DOWNLOADS} > ./env/radarr.env
+rm ./env/radarr.env
+echo RADARR_TZ=Europe/Paris  >> ./env/radarr.env
+echo RADARR_MOVIES=${RADARR_MOVIES} >> ./env/radarr.env
+echo RADARR_DOWNLOADS=${RADARR_DOWNLOADS} >> ./env/radarr.env
 
 # Jackett
 # Transmission
@@ -199,11 +239,12 @@ if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then
 fi
 sudo chmod 600 $TRAEFIK_LETSENCRYPT_FILE
 
-echo TRAEFIK_CONF_FILE=${TRAEFIK_CONF_FILE} > ./env/traefik.env
-echo TRAEFIK_LETSENCRYPT_FILE=${TRAEFIK_LETSENCRYPT_FILE} > ./env/traefik.env
+rm ./env/traefik.env
+echo TRAEFIK_CONF_FILE=${TRAEFIK_CONF_FILE} >> ./env/traefik.env
+echo TRAEFIK_LETSENCRYPT_FILE=${TRAEFIK_LETSENCRYPT_FILE} >> ./env/traefik.env
 
 # Docker compose 
 cat docker-compose.tpl.yml | sed -e "s|{{NEXTCLOUD_HOST}}|$NEXTCLOUD_HOST|g;s|{{TRANSMISSION_HOST}}|$TRANSMISSION_HOST|g;s|{{JACKETT_HOST}}|$JACKETT_HOST|g;s|{{RADARR_HOST}}|$RADARR_HOST|g;" > docker-compose.yml
 
 # Traefik
-cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_HOST}}|$COCKPIT_HOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{HOST_LIST}}|$HOST_LIST|g" traefik/traefik.tpl.toml > traefik/traefik.tpl.toml
+cat traefik/traefik.tpl.toml | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{COCKPIT_HOST}}|$COCKPIT_HOST|g;s|{{DOMAIN}}|$DOMAIN|g;s|{{HOST_LIST}}|$HOST_LIST|g" > traefik/traefik.toml

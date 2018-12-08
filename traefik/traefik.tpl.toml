@@ -29,7 +29,7 @@ defaultEntryPoints = ["http", "https"]
 
 [[acme.domains]]
     main = "{{DOMAIN}}"
-    sans = [{{VHOST_LIST}}]
+    sans = [{{HOST_LIST}}]
 
 [file]
 # Backends
