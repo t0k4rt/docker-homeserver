@@ -226,7 +226,7 @@ sudo mkdir -p $TRAEFIK_CONF_DIR
 if [ -d $TRAEFIK_CONF_FILE ]; then 
     sudo rm $TRAEFIK_CONF_FILE
 fi
-if [ -e $TRAEFIK_CONF_FILE ]; then 
+if [ ! -e $TRAEFIK_CONF_FILE ]; then 
     sudo touch $TRAEFIK_CONF_FILE
     sudo mv traefik/traefik.toml $TRAEFIK_CONF_FILE
 fi
@@ -235,7 +235,7 @@ echo $TRAEFIK_LETSENCRYPT_FILE
 if [ -d $TRAEFIK_LETSENCRYPT_FILE ]; then 
     sudo rm $TRAEFIK_LETSENCRYPT_FILE
 fi
-if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then 
+if [ ! -e $TRAEFIK_LETSENCRYPT_FILE ]; then 
     sudo touch $TRAEFIK_LETSENCRYPT_FILE
 fi
 sudo chmod 600 $TRAEFIK_LETSENCRYPT_FILE
