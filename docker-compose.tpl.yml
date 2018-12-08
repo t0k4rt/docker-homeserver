@@ -5,9 +5,11 @@ services:
     build: ./db
     restart: always
     volumes:
-      - db:/var/lib/postgresql/data
-    env_file:
-      - db.env
+      - db:/var/lib/postgresql/data     
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}  
 
   nextcloud:
     image: nextcloud:14-apache
@@ -18,11 +20,14 @@ services:
       - nextcloud:/var/www/html
     networks:
       - traefik
-      - default
+      - default     
     environment:
-      - POSTGRES_HOST=db
-    env_file:
-      - nextcloud.env
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - POSTGRES_HOST=db  
+      - POSTGRES_USER=${NEXTCLOUD_PASSWORD}
+      - POSTGRES_PASSWORD=${NEXTCLOUD_DB_USER}
+      - POSTGRES_DB=${NEXTCLOUD_DB}
     depends_on:
       - db
     labels:
@@ -39,9 +44,10 @@ services:
     volumes:
       - ${CONFIG_DIR}/transmission:/config
       - ${MOVIE_DOWNLOAD_DIR}:/downloads
-      - transmission_watch:/watch
-    env_file:
-      - transmission.env
+      - transmission_watch:/watch      
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
     networks:
       - traefik
     expose: 
@@ -62,8 +68,9 @@ services:
       # map blackhole with transmission watch dir
       - transmission_watch:/downloads
       - /etc/localtime:/etc/localtime:ro      
-    env_file:
-      - jackett.env
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
     networks:
       - traefik
     labels:
@@ -81,9 +88,11 @@ services:
       - ${CONFIG_DIR}/radarr:/config
       - ${RADARR_MOVIES}:/movies
       - ${RADARR_DOWNLOADS}:/downloads
-      - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - jackett.env
+      - /etc/localtime:/etc/localtime:ro    
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${RADARR_TZ}
     networks:
       - traefik
     labels:
