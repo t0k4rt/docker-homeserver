@@ -49,4 +49,4 @@ defaultEntryPoints = ["http", "https"]
         passHostHeader = true
         useXForwardedFor = true
         [frontends.cockpit.routes.test_1]
-            rule = "Host:{{COCKPIT_VHOST}}"
+            rule = "Host:{{COCKPIT_HOST}}"
