@@ -188,7 +188,7 @@ RADARR_MOVIES="${DATA_DIR}/radarr_movies"
 RADARR_DOWNLOADS="${DATA_DIR}/radarr_downloads"
 
 # Global env
-rm ./env/global.env
+rm ./env/global.env || true
 echo PGID=${PGID} >> ./env/global.env
 echo PUID=${PUID} >> ./env/global.env
 echo CONFIG_DIR=${CONFIG_DIR} >> ./env/global.env
@@ -196,18 +196,18 @@ echo MOVIE_DOWNLOAD_DIR=${MOVIE_DOWNLOAD_DIR} >> ./env/global.env
 
 # DB
 cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > db/init.sql
-rm ./env/db.env
+rm ./env/db.env || true
 echo POSTGRES_ADMIN_PASSWORD=${POSTGRES_ADMIN_PASSWORD} >> ./env/db.env
 
 #Nextcloud
-rm ./env/nextcloud.env
+rm ./env/nextcloud.env || true
 echo NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD} >> ./env/nextcloud.env
 echo NEXTCLOUD_DB=${NEXTCLOUD_DB} >> ./env/nextcloud.env
 echo NEXTCLOUD_DB_USER=${NEXTCLOUD_DB_USER} >> ./env/nextcloud.env
 echo NEXTCLOUD_DATA=${NEXTCLOUD_DATA} >> ./env/nextcloud.env
 
 # Radarr
-rm ./env/radarr.env
+rm ./env/radarr.env || true
 echo RADARR_TZ=Europe/Paris  >> ./env/radarr.env
 echo RADARR_MOVIES=${RADARR_MOVIES} >> ./env/radarr.env
 echo RADARR_DOWNLOADS=${RADARR_DOWNLOADS} >> ./env/radarr.env
@@ -222,6 +222,7 @@ TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
 TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
 
 echo $TRAEFIK_CONF_FILE
+sudo mkdir -p $TRAEFIK_CONF_DIR
 if [ -d $TRAEFIK_CONF_FILE ]; then 
     sudo rm $TRAEFIK_CONF_FILE
 fi
@@ -239,7 +240,7 @@ if [ -e $TRAEFIK_LETSENCRYPT_FILE ]; then
 fi
 sudo chmod 600 $TRAEFIK_LETSENCRYPT_FILE
 
-rm ./env/traefik.env
+rm ./env/traefik.env || true
 echo TRAEFIK_CONF_FILE=${TRAEFIK_CONF_FILE} >> ./env/traefik.env
 echo TRAEFIK_LETSENCRYPT_FILE=${TRAEFIK_LETSENCRYPT_FILE} >> ./env/traefik.env
 
