@@ -19,7 +19,7 @@ NEXTCLOUD_HOST="nextcloud.toktok.fr"
 COCKPIT_HOST="cockpit.toktok.fr"
 TRANSMISSION_HOST="transmission.toktok.fr"
 RADARR_HOST="radarr.toktok.fr"
-JACKETT_HOST="radarr.${LOCAL_HOSTNAME}"
+JACKETT_HOST="jackett.local"
 
 CONFIG_DIR=""
 TORRENT_WATCH_DIR=""
