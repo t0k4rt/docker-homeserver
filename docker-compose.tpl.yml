@@ -61,7 +61,7 @@ services:
       - "traefik.port=9091"
 
   jackett:
-    image: linuxserver/jacket:344
+    image: linuxserver/jackett:344
     restart: always
     volumes:
       - ${CONFIG_DIR}/jackett:/config
