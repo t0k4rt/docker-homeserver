@@ -13,8 +13,8 @@ services:
     image: nextcloud:14-apache
     restart: always
     volumes:
-      - {{NEXTCLOUD_DATA}}:/var/www/html/data
-      - {{NEXTCLOUD_CONFIG}}:/var/www/html/config
+      - ${NEXTCLOUD_DATA}:/var/www/html/data
+      - ${CONFIG_DIR}/nextcloud:/var/www/html/config
       - nextcloud:/var/www/html
     networks:
       - traefik
@@ -29,7 +29,7 @@ services:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
       - "traefik.backend=nextcloud"
-      - "traefik.frontend.rule=Host:{{NEXTCLOUD_VHOST}}"
+      - "traefik.frontend.rule=Host:{{NEXTCLOUD_HOST}}"
       - "traefik.protocol=http"
       - "traefik.port=80"
 
@@ -37,8 +37,8 @@ services:
     image: linuxserver/transmission:150
     restart: always
     volumes:
-      - {{TRANSMISSION_CONFIG}}:/config
-      - {{TRANSMISSION_DATA}}:/downloads
+      - ${CONFIG_DIR}/transmission:/config
+      - ${MOVIE_DOWNLOAD_DIR}:/downloads
       - transmission_watch:/watch
     env_file:
       - transmission.env
@@ -50,7 +50,7 @@ services:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
       - "traefik.backend=transmission"
-      - "traefik.frontend.rule=Host:{{TRANSMISSION_VHOST}}"
+      - "traefik.frontend.rule=Host:{{TRANSMISSION_HOST}}"
       - "traefik.protocol=http"
       - "traefik.port=9091"
 
@@ -58,8 +58,8 @@ services:
     image: linuxserver/jacket:344
     restart: always
     volumes:
-      - {{JACKETT_CONFIG}}:/config
-      # map blackhol with transmission watch dir
+      - ${CONFIG_DIR}/jackett:/config
+      # map blackhole with transmission watch dir
       - transmission_watch:/downloads
       - /etc/localtime:/etc/localtime:ro      
     env_file:
@@ -70,7 +70,7 @@ services:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
       - "traefik.backend=jackett"
-      - "traefik.frontend.rule=Host:jackett.{{LOCAL_HOSTNAME}}"
+      - "traefik.frontend.rule=Host:{{JACKETT_HOST}}"
       - "traefik.protocol=http"
       - "traefik.port=9117"
 
@@ -78,9 +78,9 @@ services:
     image: linuxserver/radarr:142
     restart: always
     volumes:
-      - {{RADARR_CONFIG}}:/config
-      - {{RADARR_MOVIES}}:/movies
-      - {{RADARR_DOWNLOADS}}:/downloads
+      - ${CONFIG_DIR}/radarr:/config
+      - ${RADARR_MOVIES}:/movies
+      - ${RADARR_DOWNLOADS}:/downloads
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - jackett.env
@@ -90,7 +90,7 @@ services:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
       - "traefik.backend=radarr"
-      - "traefik.frontend.rule=Host:{{RADARR_VHOST}}"
+      - "traefik.frontend.rule=Host:{{RADARR_HOST}}"
       - "traefik.protocol=http"
       - "traefik.port=7878"
 
@@ -104,8 +104,8 @@ services:
       - "8080:8080" # The Web UI (enabled by --api)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - {{TRAEFIK_CONF_FILE}}:/traefik.toml
-      - {{TRAEFIK_LETSENCRYPT_FILE}}:/acme.json
+      - ${TRAEFIK_CONF_FILE}:/traefik.toml
+      - ${TRAEFIK_LETSENCRYPT_FILE}:/acme.json
     networks:
       - traefik
 
