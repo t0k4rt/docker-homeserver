@@ -59,6 +59,7 @@ services:
       - "traefik.frontend.rule=Host:{{TRANSMISSION_HOST}}"
       - "traefik.protocol=http"
       - "traefik.port=9091"
+      - "traefik.frontend.passHostHeader=true"
 
   jackett:
     image: linuxserver/jackett:344
@@ -86,7 +87,8 @@ services:
     restart: always
     volumes:
       - ${CONFIG_DIR}/radarr:/config
-      - ${RADARR_MOVIES}:/movies
+      #- ${RADARR_MOVIES}:/movies
+      - ${MOVIE_DOWNLOAD_DIR}/complete/radarr:/movies
       - ${RADARR_DOWNLOADS}:/downloads
       - /etc/localtime:/etc/localtime:ro    
     environment:
