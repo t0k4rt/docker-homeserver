@@ -207,18 +207,22 @@ echo NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD} >> ./env/nextcloud.env
 echo NEXTCLOUD_DB=${NEXTCLOUD_DB} >> ./env/nextcloud.env
 echo NEXTCLOUD_DB_USER=${NEXTCLOUD_DB_USER} >> ./env/nextcloud.env
 echo NEXTCLOUD_DATA=${NEXTCLOUD_DATA} >> ./env/nextcloud.env
+echo NEXTCLOUD_HOST=${NEXTCLOUD_HOST} >> ./env/nextcloud.env
 
 # Radarr
 rm ./env/radarr.env || true
 echo RADARR_TZ=Europe/Paris  >> ./env/radarr.env
 echo RADARR_MOVIES=${RADARR_MOVIES} >> ./env/radarr.env
+echo RADARR_HOST=${RADARR_HOST} >> ./env/radarr.env
 #echo RADARR_DOWNLOADS=${RADARR_DOWNLOADS} >> ./env/radarr.env
 
 # Jackett
+echo JACKETT_HOST=${JACKETT_HOST} >> ./env/jackett.env
 # Transmission
+echo TRANSMISSION_HOST=${TRANSMISSION_HOST} >> ./env/transmission.env
 
 #  Treafik
-HOST_LIST="\"${TRANSMISSION_HOST}\",\"${NEXTCLOUD_HOST}\",\"${COCKPIT_HOST}\",\"${RADARR_HOST}\""
+HOST_LIST="\"${TRANSMISSION_HOST}\",\"${NEXTCLOUD_HOST}\",\"${COCKPIT_HOST}\",\"${RADARR_HOST}\",\"${JACKETT_HOST}\""
 TRAEFIK_CONF_DIR="${CONFIG_DIR}/traefik"
 TRAEFIK_CONF_FILE="${TRAEFIK_CONF_DIR}/traefik.toml"
 TRAEFIK_LETSENCRYPT_FILE="${TRAEFIK_CONF_DIR}/acme.json"
