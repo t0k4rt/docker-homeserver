@@ -23,9 +23,6 @@ RADARR_HOST="radarr.toktok.fr"
 JACKETT_HOST="jackett.toktok.fr"
 
 CONFIG_DIR=""
-TORRENT_WATCH_DIR=""
-MOVIE_DOWNLOAD_DIR=""
-
 
 #### READ VARIABLES
 SUBJECT="Let's encrypt email"
@@ -43,17 +40,6 @@ SUBJECT="Config dir"
 while true; do
     read -p "$SUBJECT: " CONFIG_DIR
     if [ -z "$CONFIG_DIR" ]; then
-        echo "$SUBJECT cannot be empty, try again"
-    else
-        break
-    fi
-done
-echo ""
-
-SUBJECT="Movie download dir"
-while true; do
-    read -p "$SUBJECT: " MOVIE_DOWNLOAD_DIR
-    if [ -z "$MOVIE_DOWNLOAD_DIR" ]; then
         echo "$SUBJECT cannot be empty, try again"
     else
         break
