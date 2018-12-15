@@ -4,8 +4,8 @@ LETSENCRYPT_MAIL=""
 
 POSTGRES_ADMIN_PASSWORD=""
 
-PGID=1000
-PUID=1000
+PGID=33
+PUID=33
 
 LOCAL_HOSTNAME="tokserver.local"
 DOMAIN="toktok.fr"
@@ -14,6 +14,7 @@ NEXTCLOUD_PASSWORD=""
 NEXTCLOUD_DB="nextcloud"
 NEXTCLOUD_DB_USER="nextcloud"
 NEXTCLOUD_DATA=""
+NEXTCLOUD_FILER_USER="grosfichier"
 
 NEXTCLOUD_HOST="nextcloud.toktok.fr"
 COCKPIT_HOST="cockpit.toktok.fr"
@@ -184,15 +185,16 @@ done
 echo ""
 
 
-RADARR_MOVIES="${DATA_DIR}/radarr_movies"
-RADARR_DOWNLOADS="${DATA_DIR}/radarr_downloads"
+RADARR_MOVIES="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Films"
+BITTORRENT_DOWNLOAD_DIR="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Torrent"
+#RADARR_DOWNLOADS="${DATA_DIR}/radarr_downloads"
 
 # Global env
 rm ./env/global.env || true
 echo PGID=${PGID} >> ./env/global.env
 echo PUID=${PUID} >> ./env/global.env
 echo CONFIG_DIR=${CONFIG_DIR} >> ./env/global.env
-echo MOVIE_DOWNLOAD_DIR=${MOVIE_DOWNLOAD_DIR} >> ./env/global.env
+echo BITTORRENT_DOWNLOAD_DIR=${BITTORRENT_DOWNLOAD_DIR} >> ./env/global.env
 
 # DB
 cat db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > db/init.sql
@@ -210,7 +212,7 @@ echo NEXTCLOUD_DATA=${NEXTCLOUD_DATA} >> ./env/nextcloud.env
 rm ./env/radarr.env || true
 echo RADARR_TZ=Europe/Paris  >> ./env/radarr.env
 echo RADARR_MOVIES=${RADARR_MOVIES} >> ./env/radarr.env
-echo RADARR_DOWNLOADS=${RADARR_DOWNLOADS} >> ./env/radarr.env
+#echo RADARR_DOWNLOADS=${RADARR_DOWNLOADS} >> ./env/radarr.env
 
 # Jackett
 # Transmission
