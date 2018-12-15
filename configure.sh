@@ -171,21 +171,21 @@ while true; do
 done
 echo ""
 
-DATA_DIR=""
-SUBJECT="Data dir"
-while true; do
-    read -p "$SUBJECT: "  DATA_DIR
-    if [ -z "$DATA_DIR" ]; then
-        echo "$SUBJECT cannot be empty, try again"
-    else
-        break
-    fi
-done
-echo ""
+# DATA_DIR=""
+# SUBJECT="Data dir"
+# while true; do
+#     read -p "$SUBJECT: "  DATA_DIR
+#     if [ -z "$DATA_DIR" ]; then
+#         echo "$SUBJECT cannot be empty, try again"
+#     else
+#         break
+#     fi
+# done
+# echo ""
 
 
 RADARR_MOVIES="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Films"
-BITTORRENT_DOWNLOAD_DIR="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Torrent"
+BITTORRENT_DOWNLOAD_DIR="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Torrents"
 #RADARR_DOWNLOADS="${DATA_DIR}/radarr_downloads"
 
 # Global env
