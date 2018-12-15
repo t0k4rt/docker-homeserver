@@ -20,7 +20,7 @@ NEXTCLOUD_HOST="nextcloud.toktok.fr"
 COCKPIT_HOST="cockpit.toktok.fr"
 TRANSMISSION_HOST="transmission.toktok.fr"
 RADARR_HOST="radarr.toktok.fr"
-JACKETT_HOST="jackett.local"
+JACKETT_HOST="jackett.toktok.fr"
 
 CONFIG_DIR=""
 TORRENT_WATCH_DIR=""
@@ -167,6 +167,19 @@ while true; do
         break
     else
         RADARR_HOST="$value"
+        break
+    fi
+done
+echo ""
+
+SUBJECT="Jackett host (default ${JACKETT_HOST})"
+while true; do
+    read -p "$SUBJECT: " value
+    if [ -z "$value" ]; then
+        echo "Using default $SUBJECT: $JACKETT_HOST"
+        break
+    else
+        JACKETT_HOST="$value"
         break
     fi
 done
