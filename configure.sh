@@ -207,6 +207,7 @@ echo NEXTCLOUD_DB=${NEXTCLOUD_DB} >> ./env/nextcloud.env
 echo NEXTCLOUD_DB_USER=${NEXTCLOUD_DB_USER} >> ./env/nextcloud.env
 echo NEXTCLOUD_DATA=${NEXTCLOUD_DATA} >> ./env/nextcloud.env
 echo NEXTCLOUD_HOST=${NEXTCLOUD_HOST} >> ./env/nextcloud.env
+echo NEXTCLOUD_FILER_USER=${NEXTCLOUD_FILER_USER} >> ./env/nextcloud.env
 
 # Radarr
 rm ./env/radarr.env || true
