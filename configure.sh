@@ -16,11 +16,11 @@ NEXTCLOUD_DB_USER="nextcloud"
 NEXTCLOUD_DATA=""
 NEXTCLOUD_FILER_USER="grosfichier"
 
-NEXTCLOUD_HOST="nextcloud.toktok.fr"
-COCKPIT_HOST="cockpit.toktok.fr"
-TRANSMISSION_HOST="transmission.toktok.fr"
-RADARR_HOST="radarr.toktok.fr"
-JACKETT_HOST="jackett.toktok.fr"
+NEXTCLOUD_HOST="nextcloud.$DOMAIN"
+COCKPIT_HOST="cockpit.$DOMAIN"
+TRANSMISSION_HOST="transmission.$DOMAIN"
+RADARR_HOST="radarr.$DOMAIN"
+JACKETT_HOST="jackett.$DOMAIN"
 
 CONFIG_DIR=""
 
