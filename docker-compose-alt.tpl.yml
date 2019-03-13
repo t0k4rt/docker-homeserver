@@ -1,0 +1,203 @@
+version: '3'
+
+services:
+  db:
+    build: ./db
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data     
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}  
+
+  nextcloud:
+    image: linuxserver/nextcloud:15.0.2-ls7
+    restart: always
+    volumes:
+      - ${NEXTCLOUD_DATA}:/data
+      - ${NEXTCLOUD_CONFIG_DIR}:/config
+      #- nextcloud:/var/www/html
+    networks:
+      - traefik
+      - default     
+    environment:
+      - POSTGRES_HOST=db  
+      - POSTGRES_USER=${NEXTCLOUD_DB_USER}
+      - POSTGRES_PASSWORD=${NEXTCLOUD_PASSWORD}
+      - POSTGRES_DB=${NEXTCLOUD_DB}
+      - PGID=${PGID}
+      - PUID=${PUID}
+    depends_on:
+      - db
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=nextcloud"
+      - "traefik.frontend.rule=Host:${NEXTCLOUD_HOST}"
+      - "traefik.protocol=https"
+      - "traefik.port=443"
+      - "traefik.frontend.passHostHeader=true"
+
+  transmission:
+    image: linuxserver/transmission:2.94-r1-ls6
+    restart: always
+    volumes:
+      - ${TRANSMISSION_CONFIG_DIR}:/config
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
+      - transmission_incomplete:/incomplete
+      - transmission_watch:/watch      
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+    networks:
+      - traefik
+    # expose: 
+    #   - 9091
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=transmission"
+      - "traefik.frontend.rule=Host:${TRANSMISSION_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=9091"
+      - "traefik.frontend.passHostHeader=true"
+  
+  radarr:
+    image: linuxserver/radarr:v0.2.0.1293-ls6
+    restart: always
+    volumes:
+      - ${RADARR_CONFIG_DIR}:/config
+      # location where radarr will move films
+      - ${RADARR_MEDIAS}:/movies
+      # location where transmission download files
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
+      - /etc/localtime:/etc/localtime:ro    
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TIMEZONE}
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=radarr"
+      - "traefik.frontend.rule=Host:${RADARR_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=7878"
+
+  sonarr:
+    image: linuxserver/sonarr:3.0.1.406-ls34
+    restart: always
+    volumes:
+      - ${SONARR_CONFIG_DIR}:/config
+      # location where radarr will move films
+      - ${SONARR_MEDIAS}:/tv
+      # location where transmission download files
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
+      - /etc/localtime:/etc/localtime:ro    
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TIMEZONE}
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=sonarr"
+      - "traefik.frontend.rule=Host:${SONARR_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=8989"
+
+  jackett:
+    image: linuxserver/jackett:v0.11.31-ls1
+    restart: always
+    volumes:
+      - ${JACKETT_CONFIG_DIR}:/config
+      # map blackhole with transmission watch dir
+      - transmission_watch:/downloads
+      - /etc/localtime:/etc/localtime:ro      
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=jackett"
+      - "traefik.frontend.rule=Host:${JACKETT_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=9117"
+
+  jellyfin:
+    image: jellyfin:10.2.2
+    restart: always
+    volumes:
+      - ${JELLYFIN_CONFIG_DIR}:/config
+      - jellyfin_cache:/cache  
+      - ${RADARR_MEDIAS}:/movies
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=jellyfin"
+      - "traefik.frontend.rule=Host:${JELLYFIN_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=8096"
+
+  portainer:
+    image: portainer/portainer:1.20.2
+    restart: always
+    volumes:
+      - portainer_data:/data 
+      - portainer/portainer
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=portainer"
+      - "traefik.frontend.rule=Host:${PORTAINER_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=9000"
+
+  traefik-proxy:
+    image: traefik:1.7-alpine
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${TRAEFIK_CONF_FILE}:/traefik.toml
+      - ${TRAEFIK_LETSENCRYPT_FILE}:/acme.json
+    networks:
+      - traefik
+
+  # todo:
+  # samba:
+  #   image: dperson/samba:latest
+  #   restart: always
+
+
+volumes:
+  transmission_watch:
+  transmission_incomplete:
+  db:
+  jellyfin_cache:
+  portainer_data:
+  portainer:
+  #nextcloud:
+
+networks:
+  traefik:
