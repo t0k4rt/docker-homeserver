@@ -50,5 +50,8 @@ source $BASE_DIR/scripts/traefik.sh
 BITTORRENT_DOWNLOAD_DIR="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Torrents"
 echo BITTORRENT_DOWNLOAD_DIR=${BITTORRENT_DOWNLOAD_DIR} >> $BASE_DIR/env/global.env
 
+chown -R $PUID:$PGID $NEXTCLOUD_DATA
+chown -R $PUID:$PGID $CONFIG_DIR
+
 # Docker compose 
 cp docker-compose-alt.tpl.yml docker-compose.yml 
