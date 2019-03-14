@@ -23,7 +23,7 @@ if [ -d $TRAEFIK_CONF_FILE ]; then
 fi
 if [ ! -e $TRAEFIK_CONF_FILE ]; then 
     touch $TRAEFIK_CONF_FILE
-    mv traefik/traefik.toml $TRAEFIK_CONF_FILE
+    mv $BASE_DIR/traefik/traefik.toml $TRAEFIK_CONF_FILE
 fi
 
 echo $TRAEFIK_LETSENCRYPT_FILE

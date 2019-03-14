@@ -131,7 +131,7 @@ services:
       - "traefik.port=9117"
 
   jellyfin:
-    image: jellyfin:10.2.2
+    image: jellyfin/jellyfin:10.2.2
     restart: always
     volumes:
       - ${JELLYFIN_CONFIG_DIR}:/config
