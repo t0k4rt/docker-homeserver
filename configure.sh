@@ -43,6 +43,7 @@ source $BASE_DIR/scripts/db.sh
 source $BASE_DIR/scripts/transmission.sh
 source $BASE_DIR/scripts/radarr.sh
 source $BASE_DIR/scripts/sonarr.sh
+source $BASE_DIR/scripts/jackett.sh
 source $BASE_DIR/scripts/jellyfin.sh
 source $BASE_DIR/scripts/traefik.sh
 
