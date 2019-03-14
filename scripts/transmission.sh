@@ -15,13 +15,13 @@ while true; do
 done
 echo ""
 
-rm $BASE_DIR/env/transmission.env || true
-TRANSMISSION_CONFIG_DIR="$CONFIG/transmission"
+rm $BASE_DIR/env/transmission.env 2> /dev/null
+TRANSMISSION_CONFIG_DIR="$CONFIG_DIR/transmission"
 
 echo TRANSMISSION_HOST=${TRANSMISSION_HOST} >> $BASE_DIR/env/transmission.env
 echo TRANSMISSION_CONFIG_DIR=${TRANSMISSION_CONFIG_DIR} >> $BASE_DIR/env/transmission.env
 
-if [ -z HOST_LIST ]; then 
+if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$TRANSMISSION_HOST\"" 
 else
     HOST_LIST="$HOST_LIST,\"$TRANSMISSION_HOST\"" 

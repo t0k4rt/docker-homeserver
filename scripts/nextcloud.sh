@@ -69,8 +69,8 @@ done
 echo ""
 
 
-rm $BASE_DIR/env/nextcloud.env || true
-NEXTCLOUD_CONFIG_DIR="$CONFIG/nextcloud"
+rm $BASE_DIR/env/nextcloud.env 2> /dev/null
+NEXTCLOUD_CONFIG_DIR="$CONFIG_DIR/nextcloud"
 
 echo NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD} >> $BASE_DIR/env/nextcloud.env
 echo NEXTCLOUD_DB=${NEXTCLOUD_DB} >> $BASE_DIR/env/nextcloud.env
@@ -80,7 +80,7 @@ echo NEXTCLOUD_HOST=${NEXTCLOUD_HOST} >> $BASE_DIR/env/nextcloud.env
 echo NEXTCLOUD_FILER_USER=${NEXTCLOUD_FILER_USER} >> $BASE_DIR/env/nextcloud.env
 echo NEXTCLOUD_CONFIG_DIR=${NEXTCLOUD_CONFIG_DIR} >> $BASE_DIR/env/nextcloud.env
 
-if [ -z HOST_LIST ]; then 
+if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$NEXTCLOUD_HOST\"" 
 else
     HOST_LIST="$HOST_LIST,\"$NEXTCLOUD_HOST\"" 

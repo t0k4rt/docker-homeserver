@@ -19,15 +19,15 @@ while true; do
 done
 echo ""
 
-rm $BASE_DIR/env/radarr.env || true
+rm $BASE_DIR/env/radarr.env 2> /dev/null
 RADARR_MEDIAS="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Films"
-RADARR_CONFIG_DIR="$CONFIG/radarr"
+RADARR_CONFIG_DIR="$CONFIG_DIR/radarr"
 
 echo RADARR_HOST=${RADARR_HOST} >> $BASE_DIR/env/radarr.env
 echo RADARR_MEDIAS=${RADARR_MEDIAS} >> $BASE_DIR/env/radarr.env
 echo RADARR_CONFIG_DIR=${RADARR_CONFIG_DIR} >> $BASE_DIR/env/radarr.env
 
-if [ -z HOST_LIST ]; then 
+if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$RADARR_HOST\"" 
 else
     HOST_LIST="$HOST_LIST,\"$RADARR_HOST\"" 

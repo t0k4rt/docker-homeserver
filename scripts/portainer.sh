@@ -14,10 +14,10 @@ while true; do
 done
 echo ""
 
-rm $BASE_DIR/env/portainer.env || true
+rm $BASE_DIR/env/portainer.env 2> /dev/null
 echo PORTAINER_HOST=${PORTAINER_HOST} >> $BASE_DIR/env/portainer.env
 
-if [ -z HOST_LIST ]; then 
+if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$PORTAINER_HOST\"" 
 else
     HOST_LIST="$HOST_LIST,\"$PORTAINER_HOST\"" 

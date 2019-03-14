@@ -35,7 +35,7 @@ if [ ! -e $TRAEFIK_LETSENCRYPT_FILE ]; then
 fi
 chmod 600 $TRAEFIK_LETSENCRYPT_FILE
 
-rm $BASE_DIR/env/traefik.env || true
+rm $BASE_DIR/env/traefik.env 2> /dev/null
 echo TRAEFIK_CONF_FILE=${TRAEFIK_CONF_FILE} >> $BASE_DIR/env/traefik.env
 echo TRAEFIK_LETSENCRYPT_FILE=${TRAEFIK_LETSENCRYPT_FILE} >> $BASE_DIR/env/traefik.env
 

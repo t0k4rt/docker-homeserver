@@ -19,15 +19,15 @@ while true; do
 done
 echo ""
 
-rm $BASE_DIR/env/sonarr.env || true
+rm $BASE_DIR/env/sonarr.env 2> /dev/null
 SONARR_MEDIAS="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Tv"
-SONARR_CONFIG_DIR="$CONFIG/sonarr"
+SONARR_CONFIG_DIR="$CONFIG_DIR/sonarr"
 
 echo SONARR_HOST=${SONARR_HOST} >> $BASE_DIR/env/sonarr.env
 echo SONARR_MEDIAS=${SONARR_MEDIAS} >> $BASE_DIR/env/sonarr.env
 echo SONARR_CONFIG_DIR=${SONARR_CONFIG_DIR} >> $BASE_DIR/env/sonarr.env
 
-if [ -z HOST_LIST ]; then 
+if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$SONARR_HOST\"" 
 else
     HOST_LIST="$HOST_LIST,\"$SONARR_HOST\"" 

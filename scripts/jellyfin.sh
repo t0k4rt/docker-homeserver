@@ -15,13 +15,13 @@ while true; do
 done
 echo ""
 
-rm $BASE_DIR/env/jellyfin.env || true
-JELLYFIN_CONFIG_DIR="$CONFIG/jellyfin"
+rm $BASE_DIR/env/jellyfin.env 2> /dev/null
+JELLYFIN_CONFIG_DIR="$CONFIG_DIR/jellyfin"
 
 echo JELLYFIN_HOST=${JELLYFIN_HOST} >> $BASE_DIR/env/jellyfin.env
 echo JELLYFIN_CONFIG_DIR=${JELLYFIN_CONFIG_DIR} >> $BASE_DIR/env/jellyfin.env
 
-if [ -z HOST_LIST ]; then 
+if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$JELLYFIN_HOST\"" 
 else
     HOST_LIST="$HOST_LIST,\"$JELLYFIN_HOST\"" 

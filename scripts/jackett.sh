@@ -15,13 +15,13 @@ while true; do
 done
 echo ""
 
-rm $BASE_DIR/env/jackett.env || true
-JACKETT_CONFIG_DIR="$CONFIG/jackett"
+rm $BASE_DIR/env/jackett.env 2> /dev/null
+JACKETT_CONFIG_DIR="$CONFIG_DIR/jackett"
 
 echo JACKETT_HOST=${JACKETT_HOST} >> $BASE_DIR/env/jackett.env
 echo JACKETT_CONFIG_DIR=${JACKETT_CONFIG_DIR} >> $BASE_DIR/env/jackett.env
 
-if [ -z HOST_LIST ]; then 
+if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$JACKETT_HOST\"" 
 else
     HOST_LIST="$HOST_LIST,\"$JACKETT_HOST\"" 
