@@ -7,6 +7,7 @@ PGID=1111
 PUID=1111
 
 if [ `cat /etc/passwd|grep $PGID|wc -l` == "0" ]; then 
+    groupadd -g $PGID homeserver
     useradd -M -u $PUID -g $PGID homeserver
 fi
 
