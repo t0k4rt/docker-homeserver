@@ -42,8 +42,8 @@ services:
     restart: always
     volumes:
       - ${TRANSMISSION_CONFIG_DIR}:/config
-      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
-      - transmission_incomplete:/incomplete
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads/complete
+      - transmission_incomplete:/downloads/incomplete
       - transmission_watch:/watch      
     environment:
       - PGID=${PGID}
@@ -90,7 +90,7 @@ services:
     restart: always
     volumes:
       - ${SONARR_CONFIG_DIR}:/config
-      # location where radarr will move films
+      # location where sonarr will move tv shows
       - ${SONARR_MEDIAS}:/tv
       # location where transmission download files
       - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
