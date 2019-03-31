@@ -8,6 +8,8 @@ services:
       - db:/var/lib/postgresql/data     
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}  
+    labels:
+      - "traefik.enable=false"
 
   nextcloud:
     image: linuxserver/nextcloud:15.0.2-ls7
@@ -69,7 +71,7 @@ services:
       # location where radarr will move films
       - ${RADARR_MEDIAS}:/movies
       # location where transmission download files
-      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads/complete
       - /etc/localtime:/etc/localtime:ro    
     environment:
       - PGID=${PGID}
@@ -93,7 +95,7 @@ services:
       # location where sonarr will move tv shows
       - ${SONARR_MEDIAS}:/tv
       # location where transmission download files
-      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads/complete
       - /etc/localtime:/etc/localtime:ro    
     environment:
       - PGID=${PGID}
