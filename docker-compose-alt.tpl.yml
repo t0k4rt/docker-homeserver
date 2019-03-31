@@ -142,6 +142,7 @@ services:
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
+      - GIDLIST=44
     devices:
       - "/dev/dri/renderD128:/dev/dri/renderD128"
     networks:
@@ -185,16 +186,15 @@ services:
     networks:
       - traefik
 
-  # todo:
   samba:
     image: dperson/samba:latest
     restart: always
-    network_mode: "host"
+    network_mode: host
     environment:
       - NMBD=true
       - TZ=Europe/Paris
-      - USERID=${PGID}
-      - GROUPID=${PUID}
+      - USERID=${PUID}
+      - GROUPID=${PGID}
       - SHARE=Partage;/share
     ports:
       - "139:139"
