@@ -5,7 +5,7 @@ BASE_DIR="$(dirname "$0")"
 PGID=1111
 PUID=1111
 
-if [ `cat /etc/passwd|grep $PGID|wc -l` == "0" ]; then 
+if [ `cat /etc/passwd|grep $PGID|wc -l` == "0" ]; then
     groupadd -g $PGID homeserver
     useradd -M -u $PUID -g $PGID homeserver
 fi
@@ -46,6 +46,7 @@ source $BASE_DIR/scripts/sonarr.sh
 source $BASE_DIR/scripts/jackett.sh
 source $BASE_DIR/scripts/jellyfin.sh
 source $BASE_DIR/scripts/traefik.sh
+source $BASE_DIR/scripts/samba.sh
 
 BITTORRENT_DOWNLOAD_DIR="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Torrents"
 echo BITTORRENT_DOWNLOAD_DIR=${BITTORRENT_DOWNLOAD_DIR} >> $BASE_DIR/env/global.env
@@ -53,5 +54,5 @@ echo BITTORRENT_DOWNLOAD_DIR=${BITTORRENT_DOWNLOAD_DIR} >> $BASE_DIR/env/global.
 chown -R $PUID:$PGID $NEXTCLOUD_DATA
 chown -R $PUID:$PGID $CONFIG_DIR
 
-# Docker compose 
-cp docker-compose-alt.tpl.yml docker-compose.yml 
+# Docker compose
+cp docker-compose-alt.tpl.yml docker-compose.yml
