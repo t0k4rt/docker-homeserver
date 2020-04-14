@@ -10,10 +10,6 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}  
     labels:
       - "traefik.enable=false"
-    logging:
-      driver: syslog
-      options:
-        tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
 
   nextcloud:
     image: linuxserver/nextcloud:15.0.7-ls16
@@ -164,6 +160,7 @@ services:
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
+      - GIDLIST=44
     devices:
       - "/dev/dri/renderD128:/dev/dri/renderD128"
     networks:
@@ -219,15 +216,12 @@ services:
     image: dperson/samba:latest
     restart: always
     network_mode: host
-    command: >
-      -u "tok;blackbird;1000;1000"
-      -s "Partage;/share;yes;no;yes"
-      -s "tok;/tok;yes;no;no;tok;tok;tok"
     environment:
       - NMBD=true
       - TZ=Europe/Paris
       - USERID=${PUID}
       - GROUPID=${PGID}
+      - SHARE=Partage;/share
     ports:
       - "139:139"
       - "445:445"
@@ -235,13 +229,9 @@ services:
       - "138:138/udp"
     volumes:
       - ${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files:/share
-      - ${SAMBA_DATA}:/tok
     labels:
-      - "traefik.enable=false"
-    logging:
-      driver: syslog
-      options:
-        tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+      - "traefik.enable=false"   
+
 
 volumes:
   transmission_watch:

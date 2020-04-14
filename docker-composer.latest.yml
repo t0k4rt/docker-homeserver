@@ -311,7 +311,7 @@ services:
       - "138:138/udp"
     volumes:
       - ${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files:/share
-      - ${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files:/share
+      - /mnt/btrfs/data/tok:/tok
     labels:
       - "traefik.enable=false"
     # logging:
@@ -327,7 +327,6 @@ volumes:
   grafana-storage:
   jellyfin_cache:
   portainer_data:
-  #nextcloud:
 
 networks:
   traefik:

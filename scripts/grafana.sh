@@ -1,4 +1,5 @@
 # Transmission
+rm $BASE_DIR/env/grafana.env 2> /dev/null
 
 GRAFANA_HOST="grafana.$DOMAIN"
 
@@ -15,7 +16,7 @@ while true; do
 done
 echo ""
 
-rm $BASE_DIR/env/grafana.env 2> /dev/null
+
 GRAFANA_CONFIG_DIR="$CONFIG_DIR/grafana/config"
 GRAFANA_PLUGIN_DIR="$CONFIG_DIR/grafana/plugins"
 
