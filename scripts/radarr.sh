@@ -1,31 +1,23 @@
 # Radarr
 if [ -z "$NEXTCLOUD_FILER_USER" ]; then
     echo "DB depends on nextcloud package, source nextcloud first"
-    break
+    exit 1
 fi
 
-RADARR_HOST="radarr.$DOMAIN"
+RADARR_DEFAULT_HOST="radarr.$DOMAIN"
 
-SUBJECT="Radarr host (default ${RADARR_HOST})"
-while true; do
-    read -p "$SUBJECT: " value
-    if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $RADARR_HOST"
-        break
-    else
-        RADARR_HOST="$value"
-        break
-    fi
-done
-echo ""
+SUBJECT="Radarr host (default ${RADARR_DEFAULT_HOST})"
+RADARR_HOST=$(ask_value_with_default "$SUBJECT" "$RADARR_DEFAULT_HOST" "$RADARR_HOST")
 
-rm $BASE_DIR/env/radarr.env 2> /dev/null
+rm "$BASE_DIR"/env/radarr.env 2> /dev/null
 RADARR_MEDIAS="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Films"
 RADARR_CONFIG_DIR="$CONFIG_DIR/radarr"
 
-echo RADARR_HOST=${RADARR_HOST} >> $BASE_DIR/env/radarr.env
-echo RADARR_MEDIAS=${RADARR_MEDIAS} >> $BASE_DIR/env/radarr.env
-echo RADARR_CONFIG_DIR=${RADARR_CONFIG_DIR} >> $BASE_DIR/env/radarr.env
+{
+    echo RADARR_HOST=${RADARR_HOST}
+    echo RADARR_MEDIAS=${RADARR_MEDIAS}
+    echo RADARR_CONFIG_DIR=${RADARR_CONFIG_DIR}
+} >> "$BASE_DIR"/env/radarr.env
 
 if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$RADARR_HOST\"" 

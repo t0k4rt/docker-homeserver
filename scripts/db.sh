@@ -4,17 +4,7 @@ if [ -z "$NEXTCLOUD_PASSWORD" ]; then
     break
 fi
 
-POSTGRES_ADMIN_PASSWORD=""
-
-SUBJECT="Postgres admin password"
-while true; do
-    read -p "$SUBJECT: " POSTGRES_ADMIN_PASSWORD
-    if [ -z "$POSTGRES_ADMIN_PASSWORD" ]; then
-        echo "$SUBJECT cannot be empty, try again"
-    else
-        break
-    fi
-done
+POSTGRES_ADMIN_PASSWORD=$(ask_value "Postgres admin password" "$POSTGRES_ADMIN_PASSWORD")
 echo ""
 
 cat $BASE_DIR/db/init.tpl.sql | sed -e "s|{{NEXTCLOUD_PASSWORD}}|$NEXTCLOUD_PASSWORD|g;" > $BASE_DIR/db/init.sql

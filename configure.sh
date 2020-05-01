@@ -1,6 +1,10 @@
 #!/bin/bash
 
 BASE_DIR="$(dirname "$0")"
+
+# shellcheck source=functions.sh
+source "$BASE_DIR/functions.sh"
+
 # read already set parameters
 export $(cat ./env/*.env | xargs)
 
@@ -16,20 +20,11 @@ LOCAL_HOSTNAME="tokserver.local"
 DOMAIN="toktok.fr"
 HOST_LIST=""
 
-CONFIG_DIR=""
 
 #### READ VARIABLES
-
 SUBJECT="Config dir"
-while true; do
-    read -p "$SUBJECT: " CONFIG_DIR
-    if [ -z "$CONFIG_DIR" ]; then
-        echo "$SUBJECT cannot be empty, try again"
-    else
-        break
-    fi
-done
-echo ""
+CONFIG_DIR=$(ask_value "$SUBJECT" "$CONFIG_DIR")
+
 
 # Global env
 rm $BASE_DIR/env/global.env 2> /dev/null

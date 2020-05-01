@@ -1,18 +1,8 @@
 # Portainer
-PORTAINER_HOST="portainer.$DOMAIN"
+PORTAINER_DEFAULT_HOST="portainer.$DOMAIN"
 
-SUBJECT="Portainer host (default ${PORTAINER_HOST})"
-while true; do
-    read -p "$SUBJECT: " value
-    if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $PORTAINER_HOST"
-        break
-    else
-        PORTAINER_HOST="$value"
-        break
-    fi
-done
-echo ""
+SUBJECT="Portainer host (default ${PORTAINER_DEFAULT_HOST})"
+PORTAINER_HOST=$(ask_value_with_default "$SUBJECT" "$PORTAINER_DEFAULT_HOST" "$PORTAINER_HOST")
 
 rm $BASE_DIR/env/portainer.env 2> /dev/null
 echo PORTAINER_HOST=${PORTAINER_HOST} >> $BASE_DIR/env/portainer.env

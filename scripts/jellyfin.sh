@@ -1,25 +1,16 @@
 # Jellyfin
 
-JELLYFIN_HOST="jellyfin.$DOMAIN"
+JELLYFIN_DEFAULT_HOST="jellyfin.$DOMAIN"
+SUBJECT="Jellyfin host (default ${JELLYFIN_DEFAULT_HOST})"
+JELLYFIN_HOST=$(ask_value_with_default "$SUBJECT" "$JELLYFIN_DEFAULT_HOST" "$JELLYFIN_HOST")
 
-SUBJECT="Jellyfin host (default ${JELLYFIN_HOST})"
-while true; do
-    read -p "$SUBJECT: " value
-    if [ -z "$value" ]; then
-        echo "Using default $SUBJECT: $JELLYFIN_HOST"
-        break
-    else
-        JELLYFIN_HOST="$value"
-        break
-    fi
-done
-echo ""
-
-rm $BASE_DIR/env/jellyfin.env 2> /dev/null
+rm "$BASE_DIR"/env/jellyfin.env 2> /dev/null
 JELLYFIN_CONFIG_DIR="$CONFIG_DIR/jellyfin"
 
-echo JELLYFIN_HOST=${JELLYFIN_HOST} >> $BASE_DIR/env/jellyfin.env
-echo JELLYFIN_CONFIG_DIR=${JELLYFIN_CONFIG_DIR} >> $BASE_DIR/env/jellyfin.env
+{
+    echo JELLYFIN_HOST="${JELLYFIN_HOST}"
+    echo JELLYFIN_CONFIG_DIR="${JELLYFIN_CONFIG_DIR}"
+} >> "$BASE_DIR"/env/jellyfin.env
 
 if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$JELLYFIN_HOST\"" 
