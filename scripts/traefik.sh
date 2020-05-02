@@ -36,4 +36,4 @@ rm "$BASE_DIR"/env/traefik.env 2> /dev/null
 echo "Traefik has been enabled for these hosts: $HOST_LIST"
 
 # Traefik
-cat "$BASE_DIR/traefik/traefik.tpl.toml" | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{HOST_LIST}}|$HOST_LIST|g" > "$BASE_DIR"/traefik/traefik.toml
+cat "$BASE_DIR/traefik/traefik.tpl.toml" | sed -e "s|{{LETSENCRYPT_MAIL}}|$LETSENCRYPT_MAIL|g;s|{{HOST_LIST}}|$HOST_LIST|g" > $TRAEFIK_CONF_FILE

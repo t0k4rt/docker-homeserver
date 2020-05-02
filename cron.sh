@@ -15,4 +15,4 @@ FULLPATH=$(realpath "${BASE_DIR}")
 export $(cat $FULLPATH/env/*.env | xargs)
 
 # trigger file scan
-/usr/local/bin/docker-compose exec -T --user $PGID nextcloud php /config/www/nextcloud/occ files:scan $NEXTCLOUD_FILER_USER && echo "scan ok"
+/usr/local/bin/docker-compose -f $FULLPATH/docker-compose.yml exec -T -u $GID nextcloud php /config/www/nextcloud/occ files:scan $NEXTCLOUD_FILER_USER && echo "scan ok"
