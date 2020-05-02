@@ -5,27 +5,34 @@ services:
     build: ./db
     restart: always
     volumes:
-      - db:/var/lib/postgresql/data     
+      - db:/var/lib/postgresql/data
     environment:
-      - PGID=${PGID}
-      - PUID=${PUID}
-      - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}  
+      - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}
+    labels:
+      - "traefik.enable=false"
+    ports:
+      - "5432:5432"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
 
   nextcloud:
-    image: nextcloud:14-apache
+    image: linuxserver/nextcloud:15.0.7-ls16
     restart: always
     volumes:
-      - ${NEXTCLOUD_DATA}:/var/www/html/data
-      - ${CONFIG_DIR}/nextcloud:/var/www/html/config
-      - nextcloud:/var/www/html
+      - ${NEXTCLOUD_DATA}:/data
+      - ${NEXTCLOUD_CONFIG_DIR}:/config
     networks:
       - traefik
-      - default     
+      - default
     environment:
-      - POSTGRES_HOST=db  
+      - POSTGRES_HOST=db
       - POSTGRES_USER=${NEXTCLOUD_DB_USER}
       - POSTGRES_PASSWORD=${NEXTCLOUD_PASSWORD}
       - POSTGRES_DB=${NEXTCLOUD_DB}
+      - PGID=${PGID}
+      - PUID=${PUID}
     depends_on:
       - db
     labels:
@@ -35,22 +42,25 @@ services:
       - "traefik.frontend.rule=Host:${NEXTCLOUD_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=80"
+      - "traefik.frontend.passHostHeader=true"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
 
   transmission:
-    image: linuxserver/transmission:150
+    image: linuxserver/transmission:2.94-r1-ls6
     restart: always
     volumes:
-      - ${CONFIG_DIR}/transmission:/config
-      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
-      - transmission_incomplete:/incomplete
-      - transmission_watch:/watch      
+      - ${TRANSMISSION_CONFIG_DIR}:/config
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads/complete
+      - transmission_incomplete:/downloads/incomplete
+      - transmission_watch:/watch
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
     networks:
       - traefik
-    expose: 
-      - 9091
     labels:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
@@ -59,21 +69,25 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=9091"
       - "traefik.frontend.passHostHeader=true"
-  
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+
   radarr:
-    image: linuxserver/radarr:142
+    image: linuxserver/radarr:3.0.0.2704-ls10
     restart: always
     volumes:
-      - ${CONFIG_DIR}/radarr:/config
+      - ${RADARR_CONFIG_DIR}:/config
       # location where radarr will move films
-      - ${RADARR_MOVIES}:/movies
+      - ${RADARR_MEDIAS}:/movies
       # location where transmission download files
-      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads
-      - /etc/localtime:/etc/localtime:ro    
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads/complete
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
-      - TZ=${RADARR_TZ}
+      - TZ=${TIMEZONE}
     networks:
       - traefik
     labels:
@@ -83,15 +97,47 @@ services:
       - "traefik.frontend.rule=Host:${RADARR_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=7878"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
 
-  jackett:
-    image: linuxserver/jackett:344
+  sonarr:
+    image: linuxserver/sonarr:3.0.3.713-ls180
     restart: always
     volumes:
-      - ${CONFIG_DIR}/jackett:/config
+      - ${SONARR_CONFIG_DIR}:/config
+      # location where radarr will move films
+      - ${SONARR_MEDIAS}:/tv
+      # location where transmission download files
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads/complete
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TIMEZONE}
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=sonarr"
+      - "traefik.frontend.rule=Host:${SONARR_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=8989"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+
+  jackett:
+    image: linuxserver/jackett:latest
+    restart: always
+    volumes:
+      - ${JACKETT_CONFIG_DIR}:/config
       # map blackhole with transmission watch dir
       - transmission_watch:/downloads
-      - /etc/localtime:/etc/localtime:ro      
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
@@ -104,10 +150,130 @@ services:
       - "traefik.frontend.rule=Host:${JACKETT_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=9117"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
 
+  jellyfin:
+    image: jellyfin/jellyfin:10.4.3
+    restart: always
+    volumes:
+      - ${JELLYFIN_CONFIG_DIR}:/config
+      - jellyfin_cache:/cache
+      - ${RADARR_MEDIAS}:/movies
+      - ${SONARR_MEDIAS}:/tv
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - GIDLIST=44
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=jellyfin"
+      - "traefik.frontend.rule=Host:${JELLYFIN_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=8096"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
 
+  # homeassistant:
+  #   image: homeassistant/home-assistant:stable
+  #   restart: always
+  #   volumes:
+  #     - ${HOMEA_CONFIG_DIR}:/config
+  #   environment:
+  #     - TZ=Europe/Paris
+  #     - USERID=${PUID}
+  #     - GROUPID=${PGID}
+  #   networks:
+  #     - traefik
+  #   # expose other ports (mqtt) here
+  #   # ports:
+  #   #   - "80:80"
+  #   #   - "443:443"
+  #   #   - "8080:8080" # The Web UI (enabled by --api)
+  #   labels:
+  #     - "traefik.docker.network=docker-homeserver_traefik"
+  #     - "traefik.enable=true"
+  #     - "traefik.backend=jellyfin"
+  #     - "traefik.frontend.rule=Host:${HOMEA_HOST}"
+  #     - "traefik.protocol=http"
+  #     - "traefik.port=8123"
+  #   logging:
+  #     driver: syslog
+  #     options:
+  #       tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+
+  grafana:
+    image: grafana/grafana:6.7.2
+    restart: always
+    depends_on:
+      - influxdb
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ${GRAFANA_CONFIG_DIR}:/etc/grafana
+      - ${GRAFANA_PLUGIN_DIR}:/var/lib/grafana/plugins
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=influxdb"
+      - "traefik.frontend.rule=Host:${GRAFANA_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=3000"
+
+  influxdb:
+    image: influxdb:1.7.10-alpine
+    restart: always
+    environment:
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_ADMIN_USER}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_ADMIN_PASSWORD}
+    volumes:
+      - influxdb:/var/lib/influxdb
+      - ${INFLUDB_CONFIG_DIR}:/etc/influxdb
+    ports:
+      - "8086:8086"
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=false"
+      # - "traefik.docker.network=docker-homeserver_traefik"
+      # - "traefik.enable=true"
+      # - "traefik.backend=influxdb"
+      # - "traefik.frontend.rule=Host:${INFLUXDB_HOST}"
+      # - "traefik.protocol=http"
+      # - "traefik.port=8086"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+
+  portainer:
+    image: portainer/portainer:1.23.1
+    restart: always
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=portainer"
+      - "traefik.frontend.rule=Host:${PORTAINER_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=9000"
+      
   traefik-proxy:
-    image: traefik # The official Traefik docker image
+    image: traefik:1.7-alpine
     command: --api --docker # Enables the web UI and tells Traefik to listen to docker
     restart: always
     ports:
@@ -120,12 +286,47 @@ services:
       - ${TRAEFIK_LETSENCRYPT_FILE}:/acme.json
     networks:
       - traefik
+    logging:
+      driver: syslog
+      options:
+        tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+
+  samba:
+    image: dperson/samba:latest
+    restart: always
+    network_mode: host
+    command: >
+      -u "tok;blackbird;1000;1000"
+      -s "Partage;/share;yes;no;yes"
+      -s "tok;/tok;yes;no;no;tok;tok;tok"
+    environment:
+      - NMBD=true
+      - TZ=Europe/Paris
+      - USERID=${PUID}
+      - GROUPID=${PGID}
+    ports:
+      - "139:139"
+      - "445:445"
+      - "137:137/udp"
+      - "138:138/udp"
+    volumes:
+      - ${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files:/share
+      - /mnt/btrfs/data/tok:/tok
+    labels:
+      - "traefik.enable=false"
+    # logging:
+    #   driver: syslog
+    #   options:
+    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
 
 volumes:
   transmission_watch:
   transmission_incomplete:
   db:
-  nextcloud:
+  influxdb:
+  grafana-storage:
+  jellyfin_cache:
+  portainer_data:
 
 networks:
   traefik:
