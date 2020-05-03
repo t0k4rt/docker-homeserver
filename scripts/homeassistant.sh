@@ -10,7 +10,7 @@ HASS_CONFIG_DIR="$CONFIG_DIR/homeassistant"
 {
     echo HASS_HOST="${HASS_HOST}"
     echo HASS_CONFIG_DIR="${HASS_CONFIG_DIR}"
-} >> "$BASE_DIR"/env/sonarr.env
+} >> "$BASE_DIR"/env/homassistant.env
 
 if [ -z "$HOST_LIST" ]; then 
     HOST_LIST="\"$HASS_HOST\"" 
