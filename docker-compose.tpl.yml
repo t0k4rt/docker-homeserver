@@ -202,7 +202,7 @@ services:
     labels:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
-      - "traefik.backend=jellyfin"
+      - "traefik.backend=hass"
       - "traefik.frontend.rule=Host:${HASS_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=8123"
