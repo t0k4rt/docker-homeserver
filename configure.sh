@@ -41,11 +41,11 @@ source $BASE_DIR/scripts/radarr.sh
 source $BASE_DIR/scripts/sonarr.sh
 source $BASE_DIR/scripts/jackett.sh
 source $BASE_DIR/scripts/jellyfin.sh
-source $BASE_DIR/scripts/traefik.sh
 source $BASE_DIR/scripts/samba.sh
 source $BASE_DIR/scripts/influxdb.sh
 source $BASE_DIR/scripts/grafana.sh
 source $BASE_DIR/scripts/homeassistant.sh
+source $BASE_DIR/scripts/traefik.sh
 
 BITTORRENT_DOWNLOAD_DIR="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Torrents"
 echo BITTORRENT_DOWNLOAD_DIR=${BITTORRENT_DOWNLOAD_DIR} >> $BASE_DIR/env/global.env
