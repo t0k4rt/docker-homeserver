@@ -4,9 +4,8 @@ HASS_DEFAULT_HOST="hass.$DOMAIN"
 SUBJECT="Home assistant host (default ${HASS_DEFAULT_HOST})"
 HASS_HOST=$(ask_value_with_default "$SUBJECT" "$HASS_DEFAULT_HOST" "$HASS_HOST")
 
-
-rm "$BASE_DIR"/env/HASS.env 2> /dev/null
-HASS_CONFIG_DIR="$CONFIG_DIR/HASS"
+rm "$BASE_DIR"/env/homassistant.env 2> /dev/null
+HASS_CONFIG_DIR="$CONFIG_DIR/homeassistant"
 
 {
     echo HASS_HOST="${HASS_HOST}"
