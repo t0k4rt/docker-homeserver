@@ -2,7 +2,8 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:bionic
 
 # set version label
 ARG BUILD_DATE
-ARG VERSION
+ARG VERSION=1.0.0
+ARG SNAPCAST_RELEASE=0.22.0
 
 LABEL build_version="Snapcast version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="t0k4rt"
@@ -14,13 +15,13 @@ RUN \
 	curl
 RUN \
  echo "**** install snapcast *****" && \
- curl -L https://github.com/badaix/snapcast/releases/download/v${VERSION}/snapserver_${VERSION}-1_amd64.deb -o ./snapserver_${VERSION}_amd64.deb
+ curl -L https://github.com/badaix/snapcast/releases/download/v${SNAPCAST_RELEASE}/snapserver_${SNAPCAST_RELEASE}-1_amd64.deb -o ./snapserver_${SNAPCAST_RELEASE}_amd64.deb
 
 RUN \
- apt install -y ./snapserver_${VERSION}_amd64.deb && \
+ apt install -y ./snapserver_${SNAPCAST_RELEASE}_amd64.deb && \
  echo "**** cleanup ****" && \
  rm -rf \
-	./snapserver_${VERSION}_amd64.deb \
+	./snapserver_${SNAPCAST_RELEASE}_amd64.deb \
 	/tmp/* \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
