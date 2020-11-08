@@ -1,0 +1,18 @@
+#!/usr/bin/with-contenv bash
+
+# create directories
+mkdir -p \
+	/config \
+	/log \
+	/data 
+
+# permissions
+chown abc:abc \
+	/config \
+	/log \
+	/data
+
+if [ -n "$(ls -A /data 2>/dev/null)" ]; then
+chown abc:abc \
+	/data/*
+fi
