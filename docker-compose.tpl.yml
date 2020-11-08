@@ -299,26 +299,26 @@ services:
         max-size: "200k"
         max-file: "3"
 
+
   pulseaudio:
-    build: ./pulseaudio
+    build: ./docker_images/pulseaudio
     ports:
       - 4317:4317
     volumes:
       - snapcast:/var/cache/snapcast
     labels:
       - "traefik.enable=false"
+
 
   librespot:
-    build: ./pulseaudio
-    ports:
-      - 4317:4317
-    volumes:
-      - snapcast:/var/cache/snapcast
+    build: ./docker_images/librespot
+    network_mode: "host"
     labels:
       - "traefik.enable=false"
 
+
   snapcast-server:
-    build: ./snapcast-server
+    build: ./docker_images/snapcast-server
     ports:
       - 1704:1704
       - 1705:1705
@@ -352,6 +352,7 @@ services:
       driver: syslog
       options:
         tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+
 
   samba:
     image: dperson/samba:latest
@@ -390,6 +391,7 @@ volumes:
   grafana-storage:
   jellyfin_cache:
   portainer_data:
+  snapcast:
 
 networks:
   traefik:
