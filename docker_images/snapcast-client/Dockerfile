@@ -5,7 +5,7 @@ ARG BUILD_DATE
 ARG VERSION=0.0.1
 ARG SNAPCAST_RELEASE=0.22.0
 
-LABEL build_version="Snapcast version:- ${VERSION} Build-date:- ${BUILD_DATE}"
+LABEL build_version="Snapcast client version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="t0k4rt"
 
 RUN \
