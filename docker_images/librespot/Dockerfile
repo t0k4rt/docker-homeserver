@@ -8,7 +8,7 @@ ARG LIBRESPOT_RELEASE=v0.1.3
 LABEL build_version="Raspotify version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="t0k4rt"
 
-COPY build/pulseaudio/alsa_bridge_debian.sh /alsa_bridge_debian.sh
+COPY docker_images/pulseaudio/alsa_bridge_debian.sh /alsa_bridge_debian.sh
 RUN chmod +x /alsa_bridge_debian.sh && /alsa_bridge_debian.sh && rm /alsa_bridge_debian.sh
 
 RUN \
@@ -33,4 +33,4 @@ RUN \
 		/var/tmp/*
 
 # add local files
-COPY build/librespot/root / 
+COPY docker_images/librespot/root / 

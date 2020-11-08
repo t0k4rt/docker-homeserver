@@ -26,7 +26,7 @@ RUN \
 	/var/tmp/*
 
 # add local files
-COPY build/snapcast-server/root / 
+COPY docker_images/snapcast-server/root / 
 
 # ports and volumes
 EXPOSE 1704 1705 1780
