@@ -301,7 +301,9 @@ services:
 
 
   pulseaudio:
-    build: ./docker_images/pulseaudio
+    build: 
+      context: .
+      dockerfile: ./docker_images/pulseaudio/Dockerfile
     ports:
       - 4317:4317
     volumes:
@@ -311,14 +313,18 @@ services:
 
 
   librespot:
-    build: ./docker_images/librespot
+    build: 
+      context: .
+      dockerfile: ./docker_images/librespot/Dockerfile
     network_mode: "host"
     labels:
       - "traefik.enable=false"
 
 
   snapcast-server:
-    build: ./docker_images/snapcast-server
+    build: 
+      context: .
+      dockerfile: ./docker_images/snapcast-server/Dockerfile
     ports:
       - 1704:1704
       - 1705:1705

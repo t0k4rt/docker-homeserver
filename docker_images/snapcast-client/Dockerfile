@@ -30,6 +30,5 @@ RUN \
 COPY docker_images/snapcast-client/root / 
 
 # ports and volumes
-EXPOSE 1704 1705 1780
 VOLUME /config
 VOLUME /data
