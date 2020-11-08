@@ -12,17 +12,20 @@ services:
       - "traefik.enable=false"
     ports:
       - "5432:5432"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   nextcloud:
-    image: linuxserver/nextcloud:15.0.7-ls16
+    image: linuxserver/nextcloud:19.0.3-ls100
     restart: always
     volumes:
       - ${NEXTCLOUD_DATA}:/data
-      - ${NEXTCLOUD_CONFIG_DIR}:/config
+      - ${NEXTCLOUD_CONFIG_DIR}:/config/www/nextcloud/config
+      - ${NEXTCLOUD_NGINX_CONFIG_DIR}:/config/nginx/site-confs
+      - ${NEXTCLOUD_PHP_CONFIG_DIR}:/config/php
     networks:
       - traefik
       - default
@@ -40,13 +43,20 @@ services:
       - "traefik.enable=true"
       - "traefik.backend=nextcloud"
       - "traefik.frontend.rule=Host:${NEXTCLOUD_HOST}"
+      - "traefik.frontend.redirect.permanent=true"
+      - "traefik.frontend.redirect.regex=https://(.*)/.well-known/(card|cal)dav"
+      - "traefik.frontend.redirect.replacement=https://$$1/remote.php/dav/"
       - "traefik.protocol=http"
       - "traefik.port=80"
       - "traefik.frontend.passHostHeader=true"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+      - "traefik.frontend.headers.STSSeconds=15552000"
+      - "traefik.frontend.headers.STSIncludeSubdomains=true"
+      - "traefik.frontend.headers.STSPreload=true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   transmission:
     image: linuxserver/transmission:2.94-r1-ls6
@@ -69,10 +79,11 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=9091"
       - "traefik.frontend.passHostHeader=true"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   radarr:
     image: linuxserver/radarr:3.0.0.2704-ls10
@@ -97,10 +108,11 @@ services:
       - "traefik.frontend.rule=Host:${RADARR_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=7878"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   sonarr:
     image: linuxserver/sonarr:3.0.3.713-ls180
@@ -125,10 +137,11 @@ services:
       - "traefik.frontend.rule=Host:${SONARR_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=8989"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   jackett:
     image: linuxserver/jackett:latest
@@ -150,13 +163,14 @@ services:
       - "traefik.frontend.rule=Host:${JACKETT_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=9117"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   jellyfin:
-    image: jellyfin/jellyfin:10.4.3
+    image: jellyfin/jellyfin:10.5.5
     restart: always
     volumes:
       - ${JELLYFIN_CONFIG_DIR}:/config
@@ -167,8 +181,8 @@ services:
       - PGID=${PGID}
       - PUID=${PUID}
       - GIDLIST=44
-    devices:
-      - "/dev/dri/renderD128:/dev/dri/renderD128"
+#    devices:
+#      - "/dev/dri/renderD128:/dev/dri/renderD128"
     networks:
       - traefik
     labels:
@@ -178,10 +192,11 @@ services:
       - "traefik.frontend.rule=Host:${JELLYFIN_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=8096"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   homeassistant:
     image: homeassistant/home-assistant:stable
@@ -206,10 +221,11 @@ services:
       - "traefik.frontend.rule=Host:${HASS_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=8123"
-  #   logging:
-  #     driver: syslog
-  #     options:
-  #       tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   grafana:
     image: grafana/grafana:6.7.2
@@ -229,6 +245,11 @@ services:
       - "traefik.frontend.rule=Host:${GRAFANA_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=3000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   influxdb:
     image: influxdb:1.7.10-alpine
@@ -251,10 +272,11 @@ services:
       # - "traefik.frontend.rule=Host:${INFLUXDB_HOST}"
       # - "traefik.protocol=http"
       # - "traefik.port=8086"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
   portainer:
     image: portainer/portainer:1.23.1
@@ -271,7 +293,12 @@ services:
       - "traefik.frontend.rule=Host:${PORTAINER_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=9000"
-      
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
+
   traefik-proxy:
     image: traefik:1.7-alpine
     command: --api --docker # Enables the web UI and tells Traefik to listen to docker
@@ -314,10 +341,11 @@ services:
       - /mnt/btrfs/data/tok:/tok
     labels:
       - "traefik.enable=false"
-    # logging:
-    #   driver: syslog
-    #   options:
-    #     tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
 
 volumes:
   transmission_watch:
