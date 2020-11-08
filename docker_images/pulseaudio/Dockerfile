@@ -36,7 +36,7 @@ COPY docker_images/pulseaudio/usr/docker-pulseaudio-sound.pa.tpl /usr/src/docker
 # COPY udev/95-balena-audio.rules /etc/udev/rules.d/95-balena-audio.rules
 
 # Entrypoint
-COPY entry.sh .
+COPY docker_images/pulseaudio/entry.sh .
 
 ENTRYPOINT [ "/bin/bash", "/usr/src/entry.sh" ]
 CMD [ "pulseaudio" ]
