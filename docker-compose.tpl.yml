@@ -299,6 +299,41 @@ services:
         max-size: "200k"
         max-file: "3"
 
+  pulseaudio:
+    build: ./pulseaudio
+    ports:
+      - 4317:4317
+    volumes:
+      - snapcast:/var/cache/snapcast
+    labels:
+      - "traefik.enable=false"
+
+  librespot:
+    build: ./pulseaudio
+    ports:
+      - 4317:4317
+    volumes:
+      - snapcast:/var/cache/snapcast
+    labels:
+      - "traefik.enable=false"
+
+  snapcast-server:
+    build: ./snapcast-server
+    ports:
+      - 1704:1704
+      - 1705:1705
+    volumes:
+      - snapcast:/var/cache/snapcast
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=portainer"
+      - "traefik.frontend.rule=Host:${SNAPCAST_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=1780"
+
   traefik-proxy:
     image: traefik:1.7-alpine
     command: --api --docker # Enables the web UI and tells Traefik to listen to docker

@@ -40,6 +40,7 @@ set -- /usr/bin/librespot \
   --name "$SOUND_DEVICE_NAME" \
   --bitrate "$SOUND_SPOTIFY_BITRATE" \
   --mixer-linear-volume \
+  --backend pulseaudio \
   "$@"
 
 echo "$@"

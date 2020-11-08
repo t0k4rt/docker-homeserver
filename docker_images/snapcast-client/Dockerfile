@@ -15,10 +15,10 @@ RUN \
 	curl
 RUN \
  echo "**** install snapcast *****" && \
- curl -L https://github.com/badaix/snapcast/releases/download/v${SNAPCAST_RELEASE}/snapserver_${SNAPCAST_RELEASE}-1_amd64.deb -o ./snapserver_${SNAPCAST_RELEASE}_amd64.deb
+ curl -L https://github.com/badaix/snapcast/releases/download/v${SNAPCAST_RELEASE}/snapclient_${SNAPCAST_RELEASE}-1_amd64.deb -o ./snapclient_${SNAPCAST_RELEASE}_amd64.deb
 
 RUN \
- apt install -y ./snapserver_${SNAPCAST_RELEASE}_amd64.deb && \
+ apt install -y ./snapclient_${SNAPCAST_RELEASE}_amd64.deb && \
  echo "**** cleanup ****" && \
  rm -rf \
 	./snapserver_${SNAPCAST_RELEASE}_amd64.deb \
@@ -27,7 +27,7 @@ RUN \
 	/var/tmp/*
 
 # add local files
-COPY docker_images/snapcast-server/root / 
+COPY docker_images/snapcast-client/root / 
 
 # ports and volumes
 EXPOSE 1704 1705 1780

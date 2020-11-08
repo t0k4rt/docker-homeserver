@@ -5,11 +5,12 @@ ARG BUILD_DATE
 ARG VERSION=1.0.0
 ARG LIBRESPOT_RELEASE=v0.1.3
 
-LABEL build_version="Raspotify version:- ${VERSION} Build-date:- ${BUILD_DATE}"
+LABEL build_version="Librespot version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="t0k4rt"
 
-COPY docker_images/pulseaudio/alsa_bridge_debian.sh /alsa_bridge_debian.sh
-RUN chmod +x /alsa_bridge_debian.sh && /alsa_bridge_debian.sh && rm /alsa_bridge_debian.sh
+ENV PULSE_SERVER=tcp:localhost:4317
+# COPY docker_images/pulseaudio/alsa_bridge_debian.sh /alsa_bridge_debian.sh
+# RUN chmod +x /alsa_bridge_debian.sh && /alsa_bridge_debian.sh && rm /alsa_bridge_debian.sh
 
 RUN \
  echo "**** install packages ****" && \
@@ -19,7 +20,7 @@ RUN \
 # Install rust toolchain
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 RUN git clone https://github.com/librespot-org/librespot && cd /librespot && git checkout ${LIBRESPOT_RELEASE} &&\
-	/root/.cargo/bin/cargo build --release && \
+	/root/.cargo/bin/cargo build --release --no-default-features --features pulseaudio-backend && \
 	cp ./target/release/librespot /usr/bin/librespot
 
 RUN \
