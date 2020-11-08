@@ -27,9 +27,9 @@ RUN  echo "**** cleanup ****" && \
 #dev-cmd-live=pulseaudio || balena-idle
 
 # PulseAudio configuration
-COPY pulseaudio/primitive.pa /etc/pulse/primitive.pa
-COPY pulseaudio/client.conf /etc/pulse/client.conf
-COPY pulseaudio/daemon.conf /etc/pulse/daemon.conf
+COPY pulse/primitive.pa /etc/pulse/primitive.pa
+COPY pulse/client.conf /etc/pulse/client.conf
+COPY pulse/daemon.conf /etc/pulse/daemon.conf
 COPY usr/docker-pulseaudio-sound.pa.tpl /usr/src/docker-pulseaudio-sound.pa.tpl
 
 # UDev configuration
