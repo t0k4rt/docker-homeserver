@@ -15,7 +15,7 @@ ENV MODE="MULTI_ROOM"
 # DBUS is required for module-bluetooth-discover
 ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
-RUN apt update && apt install pulseaudio xxd alsa-utils
+RUN apt update && apt install -y pulseaudio xxd alsa-utils
 RUN  echo "**** cleanup ****" && \
     rm -rf \
 	./snapserver_${SNAPCAST_RELEASE}_amd64.deb \
