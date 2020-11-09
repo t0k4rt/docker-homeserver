@@ -32,7 +32,7 @@ RUN  echo "**** cleanup ****" && \
 COPY docker_images/pulseaudio/pulse/primitive.pa /etc/pulse/primitive.pa
 COPY docker_images/pulseaudio/pulse/client.conf /etc/pulse/client.conf
 COPY docker_images/pulseaudio/pulse/daemon.conf /etc/pulse/daemon.conf
-COPY docker_images/pulseaudio/docker-pa-server.pa /etc/pulse/docker-pa-server.pa
+COPY docker_images/pulseaudio/pulse/docker-pa-server.pa /etc/pulse/docker-pa-server.pa
 
 # UDev configuration
 # COPY udev/95-balena-audio.rules /etc/udev/rules.d/95-balena-audio.rules
