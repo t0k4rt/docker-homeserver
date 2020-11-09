@@ -43,6 +43,5 @@ set -- /usr/bin/librespot \
   --backend pulseaudio \
   "$@"
 
-echo "$@"
 exec \
 	s6-setuidgid abc "$@"

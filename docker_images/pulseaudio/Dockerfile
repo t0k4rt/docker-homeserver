@@ -4,21 +4,23 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:bionic
 ARG BUILD_DATE
 ARG VERSION=0.0.1
 
-LABEL build_version="Snapcast version:- ${VERSION} Build-date:- ${BUILD_DATE}"
+LABEL build_version="Pulseaudio server version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="t0k4rt"
 WORKDIR /usr/src
 
 # Required to autodetect ALSA devices
-ENV UDEV=on
+# ENV UDEV=on
 ENV MODE="MULTI_ROOM"
 
 # DBUS is required for module-bluetooth-discover
-ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
+# ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
 RUN apt update && apt install -y pulseaudio xxd alsa-utils
+
+RUN apt autoremove && apt autoclean
+
 RUN  echo "**** cleanup ****" && \
     rm -rf \
-	./snapserver_${SNAPCAST_RELEASE}_amd64.deb \
 	/tmp/* \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
@@ -30,13 +32,21 @@ RUN  echo "**** cleanup ****" && \
 COPY docker_images/pulseaudio/pulse/primitive.pa /etc/pulse/primitive.pa
 COPY docker_images/pulseaudio/pulse/client.conf /etc/pulse/client.conf
 COPY docker_images/pulseaudio/pulse/daemon.conf /etc/pulse/daemon.conf
-COPY docker_images/pulseaudio/usr/docker-pulseaudio-sound.pa.tpl /usr/src/docker-pulseaudio-sound.pa.tpl
+COPY docker_images/pulseaudio/docker-pa-server.pa /etc/pulse/docker-pa-server.pa
 
 # UDev configuration
 # COPY udev/95-balena-audio.rules /etc/udev/rules.d/95-balena-audio.rules
 
+# add local files
+COPY docker_images/pulseaudio/root / 
+
+# EXPOSE Pulseaudio port
+EXPOSE 4317
+
+WORKDIR /usr/src
+
 # Entrypoint
 COPY docker_images/pulseaudio/entry.sh .
-
+RUN ls -l /usr/src
 ENTRYPOINT [ "/bin/bash", "/usr/src/entry.sh" ]
-CMD [ "pulseaudio" ]
+CMD [ "pulseaudio", "--file /etc/pulse/docker-pulseaudio-output.pa" ]
