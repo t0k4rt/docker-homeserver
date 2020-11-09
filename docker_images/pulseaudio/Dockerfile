@@ -49,4 +49,4 @@ WORKDIR /usr/src
 COPY docker_images/pulseaudio/entry.sh .
 RUN ls -l /usr/src
 ENTRYPOINT [ "/bin/bash", "/usr/src/entry.sh" ]
-CMD [ "pulseaudio", "--file /etc/pulse/docker-pulseaudio-output.pa" ]
+CMD [ "pulseaudio", "--file", "/etc/pulse/docker-pa-server.pa" ]
