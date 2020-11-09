@@ -15,7 +15,9 @@ ENV PULSE_SERVER=tcp:localhost:4317
 RUN \
  echo "**** install packages ****" && \
  apt-get update
- RUN apt-get install -y build-essential libpulse-dev libasound2-dev git pkg-config
+ RUN apt-get install -y build-essential 
+ 
+ RUN apt install -y libpulse-dev libasound2-dev git pkg-config
 
 # Install rust toolchain
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
