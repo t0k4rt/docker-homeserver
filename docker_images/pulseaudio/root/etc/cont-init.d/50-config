@@ -3,12 +3,16 @@ set -e
 mkdir -p \
 	~/.config
 
-[[ ! -f ~/.config/daemon.conf ]] && cp /defaults/daemon.conf ~/.config/pulse/daemon.conf
+ls -l /defaults
+ls -l /
+ls -al ~/
+
+
+[[ ! -f ~/.config/pulse/daemon.conf ]] && cp /defaults/daemon.conf ~/.config/pulse/daemon.conf
 [[ ! -f /config/primitive.pa ]] && cp /defaults/primitive.pa /config/primitive.pa
 [[ ! -f /config/default.pa ]] && cp /etc/pulse/default.pa /config/default.pa
 [[ ! -f /config/docker-pa-server.pa ]] && cp /defaults/docker-pa-server.pa /config/docker-pa-server.pa
 
-ls -l /home
 
 # permissions
 chown -R abc:abc \
