@@ -19,11 +19,15 @@ chown -R abc:abc \
 	/run/pulse \
 	~/.config
 
-chmod -R 755 ~/.config
+chmod -R 755 /root
 
-ls -la ~/.config/
-ls -la ~/.config/pulse
+# ls -la ~/.config/
+# ls -la ~/.config/pulse
 
-cat /root/.config/pulse//daemon.conf
+echo "pllllllllllllop "
 ls -l /root/.config
+
+echo "pllllllllllllop 2"
 ls -l /root/
+
+s6-setuidgid abc cat /root/.config/pulse//daemon.conf
