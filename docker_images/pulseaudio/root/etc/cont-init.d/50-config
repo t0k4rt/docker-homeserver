@@ -18,4 +18,4 @@ ls -al ~/
 chown -R abc:abc \
 	/config \
 	/run/pulse \
-	~/.config/pulse
+	~/.config
