@@ -7,8 +7,8 @@ mkdir -p \
 	/data 
 
 # copy config
-[[ ! -f /config/snapserver.json ]] && cp \
-	/defaults/snapserver.conf /config/snapserver.json
+[[ ! -f /config/snapserver.conf ]] && cp \
+	/defaults/snapserver.conf /config/snapserver.conf
 
 # permissions
 chown abc:abc \
