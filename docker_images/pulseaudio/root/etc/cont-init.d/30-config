@@ -1,7 +1,8 @@
 #!/usr/bin/with-contenv bash
 set -e
 mkdir -p \
-	/config
+	/config \
+	/var/cache/snapcast
 
 [[ ! -f /config/primitive.pa ]] && cp /defaults/primitive.pa /config/primitive.pa
 [[ ! -f /config/default.pa ]] && cp /etc/pulse/default.pa /config/default.pa
@@ -9,4 +10,6 @@ mkdir -p \
 
 # permissions
 chown -R abc:abc \
-	/config 
+	/config \
+	/var/cache/snapcast
+

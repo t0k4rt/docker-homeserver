@@ -4,7 +4,7 @@
 mkdir -p \
 	/config \
 	/log \
-	/data 
+	/var/cache/snapcast
 
 # copy config
 [[ ! -f /config/snapserver.conf ]] && cp \
@@ -14,9 +14,9 @@ mkdir -p \
 chown abc:abc \
 	/config \
 	/log \
-	/data
+	/var/cache/snapcast
 
 if [ -n "$(ls -A /data 2>/dev/null)" ]; then
 chown abc:abc \
-	/data/*
+	/var/cache/snapcast/*
 fi
