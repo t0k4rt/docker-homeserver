@@ -19,8 +19,11 @@ chown -R abc:abc \
 	/run/pulse \
 	~/.config
 
+chmod -R 755 ~/.config
+
 ls -la ~/.config/
 ls -la ~/.config/pulse
 
 cat /root/.config/pulse//daemon.conf
 ls -l /root/.config
+ls -l /root/
