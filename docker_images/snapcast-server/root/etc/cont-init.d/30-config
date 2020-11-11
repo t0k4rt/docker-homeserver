@@ -6,6 +6,10 @@ mkdir -p \
 	/log \
 	/data 
 
+# copy config
+[[ ! -f /config/settings.json ]] && cp \
+	/defaults/settings.json /config/settings.json
+
 # permissions
 chown abc:abc \
 	/config \
