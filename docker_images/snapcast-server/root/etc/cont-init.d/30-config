@@ -10,6 +10,10 @@ mkdir -p \
 [[ ! -f /config/snapserver.conf ]] && cp \
 	/defaults/snapserver.conf /config/snapserver.conf
 
+# copy web ui patch
+cp /webui-patch/snapcontrol.js /usr/share/snapserver/snapweb/snapcontrol.js
+cp /webui-patch/snapstream.js /usr/share/snapserver/snapweb/snapstream.js
+
 # permissions
 chown abc:abc \
 	/config \

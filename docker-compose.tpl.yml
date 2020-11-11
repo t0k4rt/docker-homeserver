@@ -299,11 +299,13 @@ services:
         max-size: "200k"
         max-file: "3"
 
-
   pulseaudio:
-    build: 
+    build:
       context: .
       dockerfile: ./docker_images/pulseaudio/Dockerfile
+    environment:
+      - USERID=${PUID}
+      - GROUPID=${PGID}
     ports:
       - 4317:4317
     volumes:
@@ -311,23 +313,27 @@ services:
     labels:
       - "traefik.enable=false"
 
-
   librespot:
-    build: 
+    build:
       context: .
       dockerfile: ./docker_images/librespot/Dockerfile
+    environment:
+      - PULSEAUDIO_SERVER=pulseaudio:4317
     network_mode: "host"
     labels:
       - "traefik.enable=false"
 
-
   snapcast-server:
-    build: 
+    build:
       context: .
       dockerfile: ./docker_images/snapcast-server/Dockerfile
+    environment:
+      - USERID=${PUID}
+      - GROUPID=${PGID}
     ports:
       - 1704:1704
       - 1705:1705
+      - 1780:1780
     volumes:
       - snapcast:/var/cache/snapcast
       - ${SNAPCAST_CONFIG_DIR}:/config
@@ -336,7 +342,7 @@ services:
     labels:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
-      - "traefik.backend=portainer"
+      - "traefik.backend=snapcast"
       - "traefik.frontend.rule=Host:${SNAPCAST_HOST}"
       - "traefik.protocol=http"
       - "traefik.port=1780"
