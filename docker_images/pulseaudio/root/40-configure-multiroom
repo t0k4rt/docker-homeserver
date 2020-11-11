@@ -76,6 +76,3 @@ route_output_sink
 if [[ -n "$SOUND_ENABLE_SOUNDCARD_INPUT" ]]; then
   route_input_source
 fi
-
-cat /etc/pulse/docker-pulseaudio-output.pa
-echo "pulseaudio --file /etc/pulse/docker-pulseaudio-output.pa"
