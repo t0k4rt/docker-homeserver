@@ -10,7 +10,7 @@ mkdir -p \
 [[ ! -f /config/default.pa ]] && cp /etc/pulse/default.pa /config/default.pa
 [[ ! -f /config/docker-pa-server.pa ]] && cp /defaults/docker-pa-server.pa /config/docker-pa-server.pa
 
-ls -la ~/.config/
+
 cat ~/.config/pulse//daemon.conf
 
 # permissions
@@ -18,3 +18,9 @@ chown -R abc:abc \
 	/config \
 	/run/pulse \
 	~/.config
+
+ls -la ~/.config/
+ls -la ~/.config/pulse
+
+cat /root/.config/pulse//daemon.conf
+ls -l /root/.config
