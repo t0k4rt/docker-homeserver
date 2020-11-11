@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 set -e
 mkdir -p \
-	~/.config
+	~/.config/pulse
 
 ls -l /defaults
 ls -l /
