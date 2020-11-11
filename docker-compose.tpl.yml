@@ -330,6 +330,7 @@ services:
       - 1705:1705
     volumes:
       - snapcast:/var/cache/snapcast
+      - ${SNAPCAST_CONFIG_DIR}:/config
     networks:
       - traefik
     labels:

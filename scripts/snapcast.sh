@@ -1,9 +1,4 @@
 # Snapcast
-if [ -z "$NEXTCLOUD_FILER_USER" ]; then
-    echo "DB depends on nextcloud package, source nextcloud first"
-    exit 1
-fi
-
 SNAPCAST_DEFAULT_HOST="snapcast.$DOMAIN"
 
 SUBJECT="Snapcast host (default ${SNAPCAST_DEFAULT_HOST})"
