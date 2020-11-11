@@ -17,7 +17,7 @@ cat ~/.config/pulse//daemon.conf
 chown -R abc:abc \
 	/config \
 	/run/pulse \
-	~/.config
+	/root
 
 chmod -R 755 /root
 
