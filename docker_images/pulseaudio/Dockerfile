@@ -36,11 +36,5 @@ COPY docker_images/pulseaudio/root /
 # EXPOSE Pulseaudio port
 EXPOSE 4317
 
-# WORKDIR /usr/src
-
-# Entrypoint
-COPY docker_images/pulseaudio/entry.sh /usr/src/entry.sh
-
-# RUN ls -l /usr/src
 # ENTRYPOINT [ "/bin/bash", "/usr/src/entry.sh" ]
 # CMD [ "pulseaudio", "--file", "/etc/pulse/docker-pa-server.pa" ]
