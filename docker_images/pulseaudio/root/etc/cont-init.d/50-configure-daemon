@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bash
+set -e
+mkdir -p \
+	~/.config/pulse \
+	/run/pulse
+
+[[ ! -f ~/.config/pulse/daemon.conf ]] && cp /defaults/daemon.conf ~/.config/pulse/daemon.conf
+
+# permissions
+chown -R abc:abc \
+	/run/pulse \
+	/root
+
+chmod -R 755 /root

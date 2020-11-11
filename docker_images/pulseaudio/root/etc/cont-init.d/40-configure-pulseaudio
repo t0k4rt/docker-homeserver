@@ -5,7 +5,11 @@ set -e
 # Helper functions
 function pa_disable_module() {
   local MODULE="$1"
-  sed -i "s/load-module $MODULE/#load-module $MODULE/" /etc/pulse/default.pa
+  # echo "Search moduel $MODULE"
+  # SEARCH_MODULE=$(cat /etc/pulse/default.pa|grep $MODULE|wc -l)
+  # if [ "$SEARCH_MODULE" -eq 0 ]; then
+  # echo $SEARCH_MODULE
+  sed -i "s/load-module $MODULE/#load-module $MODULE/" /config/default.pa
 }
 
 function pa_set_log_level() {
@@ -13,7 +17,7 @@ function pa_set_log_level() {
   declare -A options=(["ERROR"]=0 ["WARN"]=1 ["NOTICE"]=2 ["INFO"]=3 ["DEBUG"]=4)
   if [[ "${options[$PA_LOG_LEVEL]}" ]]; then
     LOWER_LOG_LEVEL=$(echo "$PA_LOG_LEVEL" | tr '[:upper:]' '[:lower:]')
-    sed -i "s/log-level = notice/log-level = $LOWER_LOG_LEVEL/g" /etc/pulse/daemon.conf
+    sed -i "s/log-level = notice/log-level = $LOWER_LOG_LEVEL/g" /config/daemon.conf
   fi
 }
 
@@ -100,7 +104,7 @@ function pa_set_default_output () {
   # Set the sink name as PA default and save it in a temp file
   if [[ -n "$PA_SINK" ]]; then
     echo "$PA_SINK" > /run/pulse/pulseaudio.sink
-    echo -e "\nset-default-sink $PA_SINK" >> /etc/pulse/primitive.pa
+    echo -e "\nset-default-sink $PA_SINK" >> /config/primitive.pa
   fi
 }
 
@@ -137,9 +141,6 @@ echo -e "\nDetected audio cards:"
 print_audio_cards
 echo -e "\n"
 
-# Create dir for temp/share files
-mkdir -p /run/pulse
-
 # Configure audio hardware
 # init_audio_hardware
 # pa_set_default_output "$DEFAULT_OUTPUT"
@@ -150,10 +151,10 @@ pa_disable_module module-console-kit
 # Disable PulseAudio modules that need special configuration
 # These will be loaded and configured by the primitive.pa config file
 pa_disable_module module-bluetooth-discover
-
 pa_disable_module module-bluetooth-policy
-
 pa_disable_module module-native-protocol-unix
+
+pa_disable_module module-dbus-protocol
 
 pa_set_log_level "$LOG_LEVEL"
 

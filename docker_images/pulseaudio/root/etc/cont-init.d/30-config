@@ -1,22 +1,12 @@
 #!/usr/bin/with-contenv bash
 set -e
 mkdir -p \
-	~/.config/pulse \
-	/run/pulse
+	/config
 
-
-[[ ! -f ~/.config/pulse/daemon.conf ]] && cp /defaults/daemon.conf ~/.config/pulse/daemon.conf
 [[ ! -f /config/primitive.pa ]] && cp /defaults/primitive.pa /config/primitive.pa
 [[ ! -f /config/default.pa ]] && cp /etc/pulse/default.pa /config/default.pa
 [[ ! -f /config/docker-pa-server.pa ]] && cp /defaults/docker-pa-server.pa /config/docker-pa-server.pa
 
-
-cat ~/.config/pulse//daemon.conf
-
 # permissions
 chown -R abc:abc \
-	/config \
-	/run/pulse \
-	/root
-
-chmod -R 755 /root
+	/config 
