@@ -303,6 +303,7 @@ services:
     build:
       context: .
       dockerfile: ./docker_images/pulseaudio/Dockerfile
+    restart: always
     environment:
       - USERID=${PUID}
       - GROUPID=${PGID}
@@ -317,6 +318,7 @@ services:
     build:
       context: .
       dockerfile: ./docker_images/librespot/Dockerfile
+    restart: always
     environment:
       - PULSEAUDIO_SERVER=pulseaudio:4317
     network_mode: "host"
@@ -327,6 +329,7 @@ services:
     build:
       context: .
       dockerfile: ./docker_images/snapcast-server/Dockerfile
+    restart: always
     environment:
       - USERID=${PUID}
       - GROUPID=${PGID}
