@@ -94,7 +94,7 @@ COPY 	--from=builder-sps /etc/shairport-sync* /config/
 COPY 	--from=builder-sps /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
 
 # add local files
-COPY root/ /
+COPY docker_images/shairport-sync/root/ /
 
 # COPY 	start.sh /
 # ENTRYPOINT [ "/start.sh" ]
