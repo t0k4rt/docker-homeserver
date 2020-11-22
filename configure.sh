@@ -45,7 +45,7 @@ source $BASE_DIR/scripts/samba.sh
 source $BASE_DIR/scripts/influxdb.sh
 source $BASE_DIR/scripts/grafana.sh
 source $BASE_DIR/scripts/homeassistant.sh
-source $BASE_DIR/scripts/shairport.sh
+source $BASE_DIR/scripts/shairport-sync.sh
 source $BASE_DIR/scripts/snapcast.sh
 source $BASE_DIR/scripts/traefik.sh
 
