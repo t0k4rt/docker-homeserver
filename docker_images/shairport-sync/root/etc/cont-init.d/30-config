@@ -11,3 +11,6 @@ mkdir -p ~/.config/pulse
 chown -R abc:abc \
 	/config \
 	~/.config
+
+# allow read permission for cookie
+chmod -R 755 /root
