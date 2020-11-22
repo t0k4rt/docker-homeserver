@@ -71,7 +71,7 @@ ENV PULSE_SERVER=tcp:localhost:4317
 ENV SHAIRPORT_NAME = "Shairport sync"
 
 RUN apk add \
-        alsa-lib \
+        pulseaudio \
         dbus \
         popt \
         glib \
