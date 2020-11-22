@@ -2,8 +2,12 @@
 
 # make folders
 mkdir -p /config/shairport-sync
+mkdir -p ~/.config/pulse
+
 [[ ! -f /config/shairport-sync/shairport-sync.conf ]] && cp /defaults/shairport-sync.conf /config/shairport-sync/shairport-sync.conf
+[[ ! -f ~/.config/pulse/cookie ]] && touch ~/.config/pulse/cookie
 
 # permissions
 chown -R abc:abc \
-	/config
+	/config \
+	~/.config
