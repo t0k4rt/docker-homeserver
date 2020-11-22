@@ -16,7 +16,7 @@ if [ `cat /etc/passwd|grep $PGID|wc -l` == "0" ] && [ `uname` != "Darwin" ]; the
     useradd -M -u $PUID -g $PGID homeserver
 fi
 
-LOCAL_HOSTNAME="tokserver.local"
+LOCAL_HOSTNAME="elsa.lan"
 DOMAIN="toktok.fr"
 HOST_LIST=""
 
@@ -45,6 +45,7 @@ source $BASE_DIR/scripts/samba.sh
 source $BASE_DIR/scripts/influxdb.sh
 source $BASE_DIR/scripts/grafana.sh
 source $BASE_DIR/scripts/homeassistant.sh
+source $BASE_DIR/scripts/shairport.sh
 source $BASE_DIR/scripts/snapcast.sh
 source $BASE_DIR/scripts/traefik.sh
 

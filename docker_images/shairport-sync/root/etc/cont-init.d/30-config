@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+# make folders
+mkdir -p /config/shairport-sync
+[[ ! -f /config/shairport-sync/shairport-sync.conf ]] && cp /defaults/shairport-sync.conf /config/shairport-sync/shairport-sync.conf
+
+# permissions
+chown -R abc:abc \
+	/config

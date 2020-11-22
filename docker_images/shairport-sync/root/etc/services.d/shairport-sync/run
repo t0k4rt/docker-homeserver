@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv bash
+
+# set umask
+UMASK_SET=${UMASK_SET:-022}
+umask "$UMASK_SET"
+
+avahi-daemon --daemonize --no-chroot
+
+exec \
+	s6-setuidgid abc /usr/local/bin/shairport-sync -o pa -c /config/shairport-sync.conf -a "${SHAIRPORT_NAME}"

@@ -610,7 +610,16 @@ function deleteClient(id) {
     }
 }
 window.onload = function (event) {
-    snapcontrol = new SnapControl(window.location.hostname, 1780);
+    let secure = false;
+    let port = "80";
+    if (window.location.protocol == "https:") {
+      secure = true;
+      port = "443";
+    }
+    if (window.location.port != "") {
+      port = window.location.port;
+    }
+    snapcontrol = new SnapControl(window.location.hostname, 1780, true);
 };
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {

@@ -325,6 +325,19 @@ services:
     labels:
       - "traefik.enable=false"
 
+  shairport:
+    build:
+      context: .
+      dockerfile: ./docker_images/shairport-sync/Dockerfile
+    restart: always
+    environment:
+      - PULSEAUDIO_SERVER=pulseaudio:4317
+    network_mode: "host"
+    volumes:
+      - ${SHAIRPORT_CONFIG_DIR}:/config
+    labels:
+      - "traefik.enable=false"
+
   snapcast-server:
     build:
       context: .
@@ -333,6 +346,7 @@ services:
     environment:
       - USERID=${PUID}
       - GROUPID=${PGID}
+    network_mode: "host"
     ports:
       - 1704:1704
       - 1705:1705
