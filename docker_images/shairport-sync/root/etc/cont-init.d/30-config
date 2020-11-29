@@ -14,3 +14,6 @@ chown -R abc:abc \
 
 # allow read permission for cookie
 chmod -R 755 /root
+
+# fix user in shairport-sync-dbus.conf
+sed -i "s/shairport-sync/abc/g" /etc/dbus-1/system.d/shairport-sync-dbus.conf

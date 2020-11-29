@@ -92,7 +92,6 @@ COPY 	--from=builder-sps /etc/shairport-sync* /etc/
 COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-dbus.conf /etc/dbus-1/system.d/
 # COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-mpris.conf /etc/dbus-1/system.d/
 COPY 	--from=builder-sps /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
-
 # add local files
 COPY docker_images/shairport-sync/root/ /
 

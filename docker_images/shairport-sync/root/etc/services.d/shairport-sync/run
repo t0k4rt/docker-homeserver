@@ -4,6 +4,7 @@
 UMASK_SET=${UMASK_SET:-022}
 umask "$UMASK_SET"
 
+rm -rf /var/run/dbus.pid
 dbus-uuidgen --ensure
 dbus-daemon --system
 avahi-daemon --daemonize --no-chroot
