@@ -143,6 +143,35 @@ services:
         max-size: "200k"
         max-file: "3"
 
+  mylar:
+    image: linuxserver/mylar3:v0.4.9.1-ls6
+    restart: always
+    volumes:
+      - ${MYLAR_CONFIG_DIR}:/config
+      # location where radarr will move films
+      - ${MYLAR_MEDIAS}:/comics
+      # location where transmission download files
+      - ${BITTORRENT_DOWNLOAD_DIR}:/downloads/complete
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TIMEZONE}
+    networks:
+      - traefik
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=sonarr"
+      - "traefik.frontend.rule=Host:${MYLAR_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=8090"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "3"
+
   jackett:
     image: linuxserver/jackett:latest
     restart: always
