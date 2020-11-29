@@ -1,10 +1,10 @@
 #!/usr/bin/with-contenv bash
 
 # make folders
-mkdir -p /config/shairport-sync
+mkdir -p /config
 mkdir -p ~/.config/pulse
 
-[[ ! -f /config/shairport-sync/shairport-sync.conf ]] && cp /defaults/shairport-sync.conf /config/shairport-sync/shairport-sync.conf
+[[ ! -f /config/shairport-sync.conf ]] && cp /defaults/shairport-sync.conf /config/shairport-sync.conf
 [[ ! -f ~/.config/pulse/cookie ]] && touch ~/.config/pulse/cookie
 
 # permissions

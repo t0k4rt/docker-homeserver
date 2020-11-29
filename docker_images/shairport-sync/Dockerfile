@@ -88,7 +88,7 @@ RUN apk add \
 RUN 	rm -rf  /lib/apk/db/*
 
 COPY 	--from=builder-alac /usr/local/lib/libalac.* /usr/local/lib/
-COPY 	--from=builder-sps /etc/shairport-sync* /config/
+COPY 	--from=builder-sps /etc/shairport-sync* /etc/
 # COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-dbus.conf /etc/dbus-1/system.d/
 # COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-mpris.conf /etc/dbus-1/system.d/
 COPY 	--from=builder-sps /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
