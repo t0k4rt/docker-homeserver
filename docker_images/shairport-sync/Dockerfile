@@ -53,7 +53,7 @@ RUN 	./configure \
               --with-ssl=mbedtls \
               --with-soxr \
               --sysconfdir=/etc \
-            #   --with-dbus-interface \
+              --with-dbus-interface \
             #   --with-mpris-interface \
             #   --with-mqtt-client \
               --with-apple-alac \
@@ -89,7 +89,7 @@ RUN 	rm -rf  /lib/apk/db/*
 
 COPY 	--from=builder-alac /usr/local/lib/libalac.* /usr/local/lib/
 COPY 	--from=builder-sps /etc/shairport-sync* /etc/
-# COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-dbus.conf /etc/dbus-1/system.d/
+COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-dbus.conf /etc/dbus-1/system.d/
 # COPY 	--from=builder-sps /etc/dbus-1/system.d/shairport-sync-mpris.conf /etc/dbus-1/system.d/
 COPY 	--from=builder-sps /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
 

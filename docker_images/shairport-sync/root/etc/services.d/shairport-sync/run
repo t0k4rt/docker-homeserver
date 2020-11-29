@@ -4,6 +4,8 @@
 UMASK_SET=${UMASK_SET:-022}
 umask "$UMASK_SET"
 
+dbus-uuidgen --ensure
+dbus-daemon --system
 avahi-daemon --daemonize --no-chroot
 
 exec \
