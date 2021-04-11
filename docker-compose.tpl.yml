@@ -16,7 +16,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   nextcloud:
     image: linuxserver/nextcloud:19.0.3-ls100
@@ -56,7 +57,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   transmission:
     image: linuxserver/transmission:2.94-r1-ls6
@@ -69,6 +71,8 @@ services:
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
+    ports:
+      - "51643:51643"
     networks:
       - traefik
     labels:
@@ -83,7 +87,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   radarr:
     image: linuxserver/radarr:3.0.0.2704-ls10
@@ -112,7 +117,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   sonarr:
     image: linuxserver/sonarr:3.0.3.713-ls180
@@ -141,7 +147,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   mylar:
     image: linuxserver/mylar3:v0.4.9.1-ls6
@@ -170,7 +177,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   jackett:
     image: linuxserver/jackett:latest
@@ -196,7 +204,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   jellyfin:
     image: jellyfin/jellyfin:10.5.5
@@ -225,7 +234,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   homeassistant:
     image: homeassistant/home-assistant:stable
@@ -254,19 +264,22 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   grafana:
-    image: grafana/grafana:6.7.2
+    image: grafana/grafana:7.5.3
     restart: always
     depends_on:
       - influxdb
+      - loki
     volumes:
       - grafana-storage:/var/lib/grafana
       - ${GRAFANA_CONFIG_DIR}:/etc/grafana
       - ${GRAFANA_PLUGIN_DIR}:/var/lib/grafana/plugins
     networks:
       - traefik
+      - grafana
     labels:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
@@ -278,8 +291,9 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
-
+        max-file: "1"
+        tag: "{{.Name}}"
+        
   influxdb:
     image: influxdb:1.7.10-alpine
     restart: always
@@ -293,6 +307,7 @@ services:
       - "8086:8086"
     networks:
       - traefik
+      - grafana
     labels:
       - "traefik.enable=false"
       # - "traefik.docker.network=docker-homeserver_traefik"
@@ -305,7 +320,39 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
+
+    loki:
+      image: grafana/loki:2.2.1
+      restart: always
+      ports:
+        - "3100:3100"
+      command: -config.file=/etc/loki/local-config.yaml
+      volumes:
+        - loki-storage:/tmp/loki
+        - ${LOKI_CONFIG_DIR}:/etc/loki
+      networks:
+        - loki
+      networks:
+        - grafana
+      labels:
+        - "traefik.enable=false"
+      
+    # promtail:
+    #   image: grafana/promtail:2.0.0
+    #   volumes:
+    #     - /var/lib/docker/containers:/var/lib/docker/containers
+    #     - /var/log:/var/log
+    #     - ${PROMTAIL_CONFIG_DIR}:/etc/loki
+    #   command: -config.file=/etc/promtail/config.yml
+    #   ports:
+    #     - "9080:9080"
+    #   networks:
+    #     - traefik
+    #     - grafana
+    #   labels:
+    #     - "traefik.enable=false"
 
   portainer:
     image: portainer/portainer:1.23.1
@@ -326,7 +373,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
   pulseaudio:
     build:
@@ -408,9 +456,11 @@ services:
     networks:
       - traefik
     logging:
-      driver: syslog
+      driver: "json-file"
       options:
-        tag: "{{.ImageName}}\\{{.Name}}\\{{.ID}}"
+        max-size: "200k"
+        max-file: "1"
+        tag: "{{.Name}}"
 
 
   samba:
@@ -440,7 +490,8 @@ services:
       driver: "json-file"
       options:
         max-size: "200k"
-        max-file: "3"
+        max-file: "1"
+        tag: "{{.Name}}"
 
 volumes:
   transmission_watch:
@@ -448,9 +499,11 @@ volumes:
   db:
   influxdb:
   grafana-storage:
+  loki-storage:
   jellyfin_cache:
   portainer_data:
   snapcast:
 
 networks:
   traefik:
+  grafana:

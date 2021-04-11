@@ -1,4 +1,4 @@
-# Transmission
+# Grafana
 rm "$BASE_DIR"/env/grafana.env 2> /dev/null
 
 GRAFANA_DEFAULT_HOST="grafana.$DOMAIN"
