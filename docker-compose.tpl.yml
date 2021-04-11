@@ -13,10 +13,8 @@ services:
     ports:
       - "5432:5432"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   nextcloud:
@@ -54,10 +52,8 @@ services:
       - "traefik.frontend.headers.STSIncludeSubdomains=true"
       - "traefik.frontend.headers.STSPreload=true"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   transmission:
@@ -84,10 +80,8 @@ services:
       - "traefik.port=9091"
       - "traefik.frontend.passHostHeader=true"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   radarr:
@@ -114,10 +108,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=7878"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   sonarr:
@@ -144,10 +136,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=8989"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   mylar:
@@ -174,10 +164,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=8090"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   jackett:
@@ -201,10 +189,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=9117"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   jellyfin:
@@ -231,10 +217,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=8096"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   homeassistant:
@@ -261,10 +245,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=8123"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   grafana:
@@ -288,10 +270,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=3000"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
         
   influxdb:
@@ -323,36 +303,34 @@ services:
         max-file: "1"
         tag: "{{.Name}}"
 
-    loki:
-      image: grafana/loki:2.2.1
-      restart: always
-      ports:
-        - "3100:3100"
-      command: -config.file=/etc/loki/local-config.yaml
-      volumes:
-        - loki-storage:/tmp/loki
-        - ${LOKI_CONFIG_DIR}:/etc/loki
-      networks:
-        - loki
-      networks:
-        - grafana
-      labels:
-        - "traefik.enable=false"
+  loki:
+    image: grafana/loki:2.2.1
+    restart: always
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/config.yml
+    volumes:
+      # - loki-storage:/tmp/loki
+      - ${LOKI_CONFIG_DIR}:/etc/loki
+    networks:
+      - grafana
+    labels:
+      - "traefik.enable=false"
       
-    # promtail:
-    #   image: grafana/promtail:2.0.0
-    #   volumes:
-    #     - /var/lib/docker/containers:/var/lib/docker/containers
-    #     - /var/log:/var/log
-    #     - ${PROMTAIL_CONFIG_DIR}:/etc/loki
-    #   command: -config.file=/etc/promtail/config.yml
-    #   ports:
-    #     - "9080:9080"
-    #   networks:
-    #     - traefik
-    #     - grafana
-    #   labels:
-    #     - "traefik.enable=false"
+  # promtail:
+  #   image: grafana/promtail:2.0.0
+  #   volumes:
+  #     - /var/lib/docker/containers:/var/lib/docker/containers
+  #     - /var/log:/var/log
+  #     - ${PROMTAIL_CONFIG_DIR}:/etc/loki
+  #   command: -config.file=/etc/promtail/config.yml
+  #   ports:
+  #     - "9080:9080"
+  #   networks:
+  #     - traefik
+  #     - grafana
+  #   labels:
+  #     - "traefik.enable=false"
 
   portainer:
     image: portainer/portainer:1.23.1
@@ -370,10 +348,8 @@ services:
       - "traefik.protocol=http"
       - "traefik.port=9000"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
   pulseaudio:
@@ -423,7 +399,6 @@ services:
     environment:
       - USERID=${PUID}
       - GROUPID=${PGID}
-    network_mode: "host"
     ports:
       - 1704:1704
       - 1705:1705
@@ -456,10 +431,8 @@ services:
     networks:
       - traefik
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
 
@@ -487,10 +460,8 @@ services:
     labels:
       - "traefik.enable=false"
     logging:
-      driver: "json-file"
       options:
-        max-size: "200k"
-        max-file: "1"
+        syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
 volumes:
