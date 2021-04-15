@@ -41,6 +41,7 @@ source $BASE_DIR/scripts/radarr.sh
 source $BASE_DIR/scripts/sonarr.sh
 source $BASE_DIR/scripts/jackett.sh
 source $BASE_DIR/scripts/jellyfin.sh
+source $BASE_DIR/scripts/shaarli.sh
 source $BASE_DIR/scripts/samba.sh
 source $BASE_DIR/scripts/influxdb.sh
 source $BASE_DIR/scripts/grafana.sh
