@@ -249,28 +249,28 @@ services:
         syslog-format: 'rfc5424'
         tag: "{{.Name}}"
 
-    shaarli:
-      image: shaarli/shaarli:v0.12.1
-      restart: always
-      volumes:
-        - shaarli-storage:/var/www/shaarli/data
-        - shaarli-cache:/var/www/shaarli/cache
-      networks:
-        - traefik
-      ports:
-        - "8001:80"
-      labels:
-        - "traefik.docker.network=docker-homeserver_traefik"
-        - "traefik.enable=true"
-        - "traefik.backend=shaarli"
-        - "traefik.frontend.rule=Host:${SHAARLI_HOST}"
-        - "traefik.protocol=http"
-        - "traefik.port=8001"
-      logging:
-        options:
-          syslog-format: 'rfc5424'
-          tag: "{{.Name}}"
-    
+  shaarli:
+    image: shaarli/shaarli:v0.12.1
+    restart: always
+    volumes:
+      - shaarli-storage:/var/www/shaarli/data
+      - shaarli-cache:/var/www/shaarli/cache
+    networks:
+      - traefik
+    ports:
+      - "8001:80"
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=shaarli"
+      - "traefik.frontend.rule=Host:${SHAARLI_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=8001"
+    logging:
+      options:
+        syslog-format: 'rfc5424'
+        tag: "{{.Name}}"
+  
   grafana:
     image: grafana/grafana:7.5.3
     restart: always
