@@ -50,6 +50,7 @@ source $BASE_DIR/scripts/homeassistant.sh
 source $BASE_DIR/scripts/shairport-sync.sh
 source $BASE_DIR/scripts/snapcast.sh
 source $BASE_DIR/scripts/mylar.sh
+source $BASE_DIR/scripts/mitm.sh
 source $BASE_DIR/scripts/traefik.sh
 
 BITTORRENT_DOWNLOAD_DIR="${NEXTCLOUD_DATA}/${NEXTCLOUD_FILER_USER}/files/Torrents"

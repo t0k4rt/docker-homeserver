@@ -257,20 +257,40 @@ services:
       - shaarli-cache:/var/www/shaarli/cache
     networks:
       - traefik
-    ports:
-      - "8001:80"
     labels:
       - "traefik.docker.network=docker-homeserver_traefik"
       - "traefik.enable=true"
       - "traefik.backend=shaarli"
       - "traefik.frontend.rule=Host:${SHAARLI_HOST}"
       - "traefik.protocol=http"
-      - "traefik.port=8001"
+      - "traefik.port=80"
     logging:
       options:
         syslog-format: 'rfc5424'
         tag: "{{.Name}}"
   
+  mitmproxy:
+    image: mitmproxy/mitmproxy:6.0.2
+    restart: always
+    volumes:
+      - shaarli-storage:/var/www/shaarli/data
+      - shaarli-cache:/var/www/shaarli/cache
+    networks:
+      - traefik
+    ports:
+      - "8888:8080"
+    labels:
+      - "traefik.docker.network=docker-homeserver_traefik"
+      - "traefik.enable=true"
+      - "traefik.backend=mitm"
+      - "traefik.frontend.rule=Host:${MITM_HOST}"
+      - "traefik.protocol=http"
+      - "traefik.port=8081"
+    logging:
+      options:
+        syslog-format: 'rfc5424'
+        tag: "{{.Name}}"
+        
   grafana:
     image: grafana/grafana:7.5.3
     restart: always
