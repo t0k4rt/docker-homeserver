@@ -31,20 +31,20 @@ defaultEntryPoints = ["http", "https"]
     main = "{{DOMAIN}}"
     sans = [{{HOST_LIST}}]
 
-[file]
-# Backends
-[backends]
-  [backends.cockpit]
-    [backends.cockpit.servers.server0]
-        url = "http://elsa.lan:9090"
-        weight = 1
+# [file]
+# # Backends
+# [backends]
+#   [backends.cockpit]
+#     [backends.cockpit.servers.server0]
+#         url = "http://elsa.lan:9090"
+#         weight = 1
 
 # Frontends
-[frontends]
-    [frontends.cockpit]
-        entryPoints = ["http", "https"]
-        backend = "cockpit"
-        passHostHeader = true
-        useXForwardedFor = true
-        [frontends.cockpit.routes.test_1]
-            rule = "Host:{{COCKPIT_HOST}}"
+# [frontends]
+#     [frontends.cockpit]
+#         entryPoints = ["http", "https"]
+#         backend = "cockpit"
+#         passHostHeader = true
+#         useXForwardedFor = true
+#         [frontends.cockpit.routes.test_1]
+#             rule = "Host:{{COCKPIT_HOST}}"

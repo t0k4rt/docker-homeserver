@@ -14,8 +14,8 @@ LOKI_CONFIG_DIR="$CONFIG_DIR/loki/config"
 } >> "$BASE_DIR"/env/loki.env
 
 
-if [ -z "$HOST_LIST" ]; then 
-    HOST_LIST="\"$LOKI_HOST\"" 
-else
-    HOST_LIST="$HOST_LIST,\"$LOKI_HOST\"" 
-fi
+# if [ -z "$HOST_LIST" ]; then 
+#     HOST_LIST="\"$LOKI_HOST\"" 
+# else
+#     HOST_LIST="$HOST_LIST,\"$LOKI_HOST\"" 
+# fi

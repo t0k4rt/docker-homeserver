@@ -276,7 +276,8 @@ services:
     # same as exec -it
     stdin_open: true
     tty: true
-
+    # launch mitmweb instead of mitmproxy
+    entrypoint: ["mitmweb", "--web-host", "0.0.0.0", "--no-web-open-browser"]
     volumes:
       - shaarli-storage:/var/www/shaarli/data
       - shaarli-cache:/var/www/shaarli/cache
