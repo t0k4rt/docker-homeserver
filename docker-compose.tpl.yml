@@ -272,6 +272,9 @@ services:
   mitmproxy:
     image: mitmproxy/mitmproxy:6.0.2
     restart: always
+    # same as exec -it
+    stdin_open: true
+    tty: true
     volumes:
       - shaarli-storage:/var/www/shaarli/data
       - shaarli-cache:/var/www/shaarli/cache

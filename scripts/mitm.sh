@@ -1,21 +1,21 @@
-# Shaarli
-rm "$BASE_DIR"/env/shaarli.env 2> /dev/null
+# Mitm
+rm "$BASE_DIR"/env/mitm.env 2> /dev/null
 
-SHAARLI_DEFAULT_HOST="shaarli.$DOMAIN"
+MITM_DEFAULT_HOST="mitm.$DOMAIN"
 
-SUBJECT="Shaarli host (default ${SHAARLI_DEFAULT_HOST})"
-SHAARLI_HOST=$(ask_value_with_default "$SUBJECT" "$SHAARLI_DEFAULT_HOST" "$SHAARLI_HOST")
+SUBJECT="Mitm host (default ${MITM_DEFAULT_HOST})"
+MITM_HOST=$(ask_value_with_default "$SUBJECT" "$MITM_DEFAULT_HOST" "$MITM_HOST")
 
-SHAARLI_CONFIG_DIR="$CONFIG_DIR/shaarli/config"
+MITM_CONFIG_DIR="$CONFIG_DIR/mitm/config"
 
 {
-    echo SHAARLI_HOST="${SHAARLI_HOST}" 
-    echo SHAARLI_CONFIG_DIR="${SHAARLI_CONFIG_DIR}"
+    echo MITM_HOST="${MITM_HOST}" 
+    echo MITM_CONFIG_DIR="${MITM_CONFIG_DIR}"
 } >> "$BASE_DIR"/env/shaarli.env
 
 
 if [ -z "$HOST_LIST" ]; then 
-    HOST_LIST="\"$SHAARLI_HOST\"" 
+    HOST_LIST="\"$MITM_HOST\"" 
 else
-    HOST_LIST="$HOST_LIST,\"$SHAARLI_HOST\"" 
+    HOST_LIST="$HOST_LIST,\"$MITM_HOST\"" 
 fi
