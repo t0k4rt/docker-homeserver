@@ -270,8 +270,10 @@ services:
         tag: "{{.Name}}"
   
   mitmproxy:
-    image: mitmproxy/mitmproxy:6.0.2
-    restart: always
+    build:
+      context: .
+      dockerfile: ./docker_images/mitmproxy/Dockerfile
+    #restart: always
     container_name: mitmproxy
     # same as exec -it
     stdin_open: true
