@@ -15,7 +15,7 @@ ENV MODE="MULTI_ROOM"
 # DBUS is required for module-bluetooth-discover
 # ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
-RUN apt update && apt install -y pulseaudio xxd alsa-utils
+RUN apt update && apt install -y dbus avahi pulseaudio pulseaudio-module-zeroconf xxd alsa-utils
 
 RUN apt autoremove && apt autoclean
 
@@ -25,16 +25,8 @@ RUN  echo "**** cleanup ****" && \
 	/var/lib/apt/lists/* \
 	/var/tmp/*
 
-# For local development
-#dev-cmd-live=pulseaudio || balena-idle
-# UDev configuration
-# COPY udev/95-balena-audio.rules /etc/udev/rules.d/95-balena-audio.rules
-
 # add local files
 COPY docker_images/pulseaudio/root / 
 
 # EXPOSE Pulseaudio port
 EXPOSE 4317
-
-# ENTRYPOINT [ "/bin/bash", "/usr/src/entry.sh" ]
-# CMD [ "pulseaudio", "--file", "/etc/pulse/docker-pa-server.pa" ]

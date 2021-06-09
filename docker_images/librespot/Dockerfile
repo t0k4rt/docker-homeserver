@@ -9,8 +9,6 @@ LABEL build_version="Librespot version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="t0k4rt"
 
 ENV PULSE_SERVER=tcp:localhost:4317
-# COPY docker_images/pulseaudio/alsa_bridge_debian.sh /alsa_bridge_debian.sh
-# RUN chmod +x /alsa_bridge_debian.sh && /alsa_bridge_debian.sh && rm /alsa_bridge_debian.sh
 
 RUN \
  echo "**** install packages ****" && \

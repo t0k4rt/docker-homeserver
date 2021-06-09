@@ -4,3 +4,6 @@
 # Load server protocols for clients
 load-module module-native-protocol-unix auth-anonymous=true auth-cookie-enabled=false auth-cookie=/run/pulse/pulseaudio.cookie socket=/run/pulse/pulseaudio.socket
 load-module module-native-protocol-tcp auth-anonymous=true auth-cookie-enabled=false auth-cookie=/run/pulse/pulseaudio.cookie port=4317
+
+# Disable zeroconf
+# load-module module-zeroconf-publish
