@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+
+# set umask
+UMASK_SET=${UMASK_SET:-022}
+umask "$UMASK_SET"
+
+rm -rf /var/run/dbus.pid
+dbus-uuidgen --ensure
+
+exec \
+	s6-setuidgid abc dbus-daemon --system

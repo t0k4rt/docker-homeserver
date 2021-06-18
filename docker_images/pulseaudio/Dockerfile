@@ -15,7 +15,8 @@ ENV MODE="MULTI_ROOM"
 # DBUS is required for module-bluetooth-discover
 # ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
-RUN apt update && apt install -y dbus avahi pulseaudio pulseaudio-module-zeroconf xxd alsa-utils
+RUN apt update 
+RUN apt install -y dbus avahi-daemon pulseaudio pulseaudio-module-zeroconf xxd alsa-utils
 
 RUN apt autoremove && apt autoclean
 
