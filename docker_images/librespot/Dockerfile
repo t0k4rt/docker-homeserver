@@ -3,7 +3,7 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:bionic
 # set version label
 ARG BUILD_DATE
 ARG VERSION=1.0.0
-ARG LIBRESPOT_RELEASE=v0.1.3
+ARG LIBRESPOT_RELEASE=v0.2.0
 
 LABEL build_version="Librespot version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="t0k4rt"
