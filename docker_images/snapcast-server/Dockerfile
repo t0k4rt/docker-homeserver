@@ -14,7 +14,7 @@ RUN \
  apt-get install -y --no-install-recommends \
 	curl \
 	dbus \
-	avahi
+	avahi-daemon
 
 RUN \
  echo "**** install snapcast *****" && \
